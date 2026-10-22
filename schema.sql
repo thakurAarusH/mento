@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,title TEXT NOT NULL,task TEXT,procedure TEXT,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS tokens(token TEXT PRIMARY KEY,session_id TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN('master','apprentice')),expires_at TEXT NOT NULL,consented_at TEXT,last_seen TEXT);
+CREATE TABLE IF NOT EXISTS recordings(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,file TEXT NOT NULL,mime TEXT,bytes INTEGER,status TEXT,error TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS observations(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,recording_id TEXT NOT NULL,t INTEGER,text TEXT,uncertainty TEXT,source TEXT);
+CREATE TABLE IF NOT EXISTS questions(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,observation_id TEXT,recording_id TEXT NOT NULL,t INTEGER,text TEXT,status TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS knowledge(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,question_id TEXT,recording_id TEXT NOT NULL,t INTEGER,observed TEXT,verbatim TEXT,summary TEXT,cues TEXT,warnings TEXT,step TEXT,tool TEXT,status TEXT NOT NULL,approved_at TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS practice(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,started_at TEXT,ended_at TEXT,frame_file TEXT);
+CREATE TABLE IF NOT EXISTS assessments(id TEXT PRIMARY KEY,practice_id TEXT,session_id TEXT NOT NULL,status TEXT,stage TEXT,evidence TEXT,confidence TEXT,knowledge_ids TEXT,feedback TEXT,needs_help INTEGER,source TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS help(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,practice_id TEXT,question TEXT,step TEXT,frame_file TEXT,assessment_id TEXT,status TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS replies(id TEXT PRIMARY KEY,help_id TEXT NOT NULL,text TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,session_id TEXT NOT NULL,kind TEXT,detail TEXT,created_at TEXT);

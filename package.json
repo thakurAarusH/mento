@@ -1,0 +1,10 @@
+{
+  "name": "monozukuri-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Prototype: local-first craft knowledge-transfer platform (master records, expert approves, apprentice is coached, human escalation).",
+  "engines": { "node": ">=22.13" },
+  "scripts": { "start": "node server.js", "test": "node --test test/*.test.js" },
+  "dependencies": { "express": "^4.21.2", "qrcode": "^1.5.4" }
+}
