@@ -4,7 +4,7 @@ const badge = (txt, cls) => `<span class="badge ${cls}">${txt}</span>`;
 const hst = { pending: ['● Pending', 'b-bad'], answered: ['✓ Answered', 'b-warn'], resolved: ['✓ Resolved', 'b-ok'], rejected: ['✕ Rejected', 'b-off'], escalated: ['▲ Escalated', 'b-bad'] };
 async function boot() { try { await api('/api/me'); await list(); } catch { login(); } }
 function login() {
-  app.innerHTML = `<form id="lf" class="card narrow"><h1>Master sign-in</h1><label for="pp">Passphrase</label><input id="pp" type="password" autocomplete="current-password" required aria-describedby="h"><p id="h" class="hint">Set as MASTER_PASSPHRASE on the server. Sign-in uses one strictly necessary cookie (see Cookies).</p><button class="btn primary">Sign in</button><p id="err" role="alert" class="err"></p></form>`;
+  app.innerHTML = `<form id="lf" class="card narrow"><h1>MENTO · Master sign-in</h1><p class="hint">Experience becomes expertise.</p><label for="pp">Passphrase</label><input id="pp" type="password" autocomplete="current-password" required aria-describedby="h"><p id="h" class="hint">Set as MASTER_PASSPHRASE on the server. Sign-in uses one strictly necessary cookie (see Cookies).</p><button class="btn primary">Sign in</button><p id="err" role="alert" class="err"></p></form>`;
   $('#lf').onsubmit = async (e) => { e.preventDefault(); try { await api('/api/login', { method: 'POST', body: { passphrase: $('#pp').value } }); boot(); } catch (x) { $('#err').textContent = x.message; } };
 }
 async function list() {

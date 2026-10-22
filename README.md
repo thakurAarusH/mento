@@ -1,4 +1,7 @@
-# Monozukuri Platform (prototype) — ONIGIRI BENTO, Thapar Japan Hackathon 2026
+# MENTO — Experience becomes expertise.
+### AI-Assisted Tacit Knowledge Transfer Platform (prototype) — ONIGIRI BENTO, Thapar Japan Hackathon 2026
+
+An AI-assisted platform for capturing, preserving and transferring practical expertise from experienced practitioners to learners (initial demonstration domains: electronics soldering and bonsai cultivation).
 
 Master records a craft task on a phone → the laptop turns moments into timestamped questions → the master answers and **approves** knowledge →
 an apprentice's phone gets coaching grounded **only** in approved records, with a button to escalate to the master. Replaces the old `soldering-tutor`; shares no code with it.

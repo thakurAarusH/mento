@@ -5,5 +5,5 @@ if (fs.existsSync('.env')) for (const l of fs.readFileSync('.env', 'utf8').split
 const port = +(process.env.PORT || 3000);
 createApp().listen(port, '0.0.0.0', () => {
   const ips = Object.values(os.networkInterfaces()).flat().filter((i) => i.family === 'IPv4' && !i.internal).map((i) => i.address);
-  console.log(`Monozukuri running. Open the DASHBOARD via a LAN address so phones can reach it:\n${ips.map((i) => `  http://${i}:${port}`).join('\n') || '  (no LAN address found)'}\nNote: phones need HTTPS for camera access on non-localhost hosts — see README (tunnel).`);
+  console.log(`MENTO running. Open the DASHBOARD via a LAN address so phones can reach it:\n${ips.map((i) => `  http://${i}:${port}`).join('\n') || '  (no LAN address found)'}\nNote: phones need HTTPS for camera access on non-localhost hosts — see README (tunnel).`);
 });

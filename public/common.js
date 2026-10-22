@@ -12,7 +12,7 @@ export function stream(url, onmsg, onstate) {
   const es = new EventSource(url); es.onopen = () => onstate?.(true); es.onerror = () => onstate?.(false);
   es.onmessage = (e) => onmsg(JSON.parse(e.data)); return es;
 }
-export const consentHtml = (who) => `<form id="cf" class="card narrow"><h1>Before we start</h1>
+export const consentHtml = (who) => `<form id="cf" class="card narrow"><h1>MENTO · Before we start</h1><p class="hint">Experience becomes expertise.</p>
 <p>This ${who} page will use your <strong>camera${who === 'master' ? ' and microphone' : ''}</strong> once you press the button below. Recording and analysis only start when you tell it to, and a red “Recording” indicator is always visible while it runs.</p>
 <ul><li>Stored privately on the operator's computer; shown only to people in this session.</li><li>Analysed only by a local AI model if the operator set one up; nothing is sent to cloud AI in this build.</li><li>Deleted automatically after the retention period, or earlier by the master.</li><li>Not used to train any model.</li></ul>
 <p><a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></p>
