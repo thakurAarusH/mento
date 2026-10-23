@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,title TEXT NOT NULL,task TEXT,procedure TEXT,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,title TEXT NOT NULL,task TEXT,procedure TEXT,skill_id TEXT DEFAULT 'soldering',task_id TEXT,created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS tokens(token TEXT PRIMARY KEY,session_id TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN('master','apprentice')),expires_at TEXT NOT NULL,consented_at TEXT,last_seen TEXT);
 CREATE TABLE IF NOT EXISTS recordings(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,file TEXT NOT NULL,mime TEXT,bytes INTEGER,status TEXT,error TEXT,created_at TEXT);
 CREATE TABLE IF NOT EXISTS observations(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,recording_id TEXT NOT NULL,t INTEGER,text TEXT,uncertainty TEXT,source TEXT);

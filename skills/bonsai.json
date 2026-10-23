@@ -1,0 +1,36 @@
+{
+  "id": "bonsai",
+  "name": "Bonsai Cultivation & Wiring",
+  "category": "Living Craft & Horticulture",
+  "description": "Branch wiring, structural pruning, and deadwood refinement for miniature tree styling.",
+  "safety_advisories": [
+    "Sharp cutter hazard: Concave branch cutters are razor-sharp; keep fingers clear of cutting jaws.",
+    "Branch fracture risk: Bending stiff lignified branches too fast can snap structural wood.",
+    "Cambium protection: Wires wound too tight will bite into growing tree bark and leave permanent scars.",
+    "Eye hazard: Aluminum/copper wire ends can whip back unexpectedly when cutting or uncoiling."
+  ],
+  "tools": [
+    { "id": "concave_cutter", "name": "Concave Branch Cutter", "purpose": "Trimming branches flush with trunk to form a sunken healing wound" },
+    { "id": "aluminum_wire", "name": "Anodized Aluminum Wire (1.5mm–3.5mm)", "purpose": "Shaping branch direction and angle" },
+    { "id": "jin_pliers", "name": "Jin Pliers", "purpose": "Gripping and bending wire ends, and creating deadwood" },
+    { "id": "wire_cutters", "name": "Bonsai Wire Cutters", "purpose": "Cutting wire close to bark without damaging cambium" },
+    { "id": "wound_sealant", "name": "Cut Paste / Wound Sealant", "purpose": "Protecting exposed cuts from drying and rot" }
+  ],
+  "tasks": [
+    {
+      "id": "secondary_branch_wiring",
+      "title": "Secondary Branch Structural Wiring",
+      "summary": "Apply aluminum wire at an even 45-degree angle along a secondary branch to set movement and orientation.",
+      "default_procedure": "1. Select wire diameter approximately 1/3 the thickness of the branch at its base.\n2. Anchor the wire firmly around the main trunk or an opposing branch (minimum 1.5 anchor turns).\n3. Wind the wire along the branch at a steady 45° angle with even spacing.\n4. Ensure wire contacts the bark snugly without crushing it or trapping green foliage.\n5. Support the branch with both hands while applying gentle, steady bending pressure.\n6. Check branch holds new position without springing back or splitting at the junction.",
+      "visual_cues": "Even 45° pitch, wire in visible contact with bark (no gaps), zero crossed wires, zero trapped foliage leaves, clean anchor wrap."
+    },
+    {
+      "id": "structural_pruning",
+      "title": "Structural Branch Pruning",
+      "summary": "Remove unwanted or inward-growing branches cleanly using concave cutters.",
+      "default_procedure": "1. Identify the branch collar.\n2. Position concave cutter blades vertically along the trunk axis.\n3. Squeeze in one smooth motion to create a slightly hollow, concave wound.\n4. Immediately apply wound sealant paste over the cut cambium ring.",
+      "visual_cues": "Slightly hollowed oval wound, clean edges with zero torn bark, wound paste covering the perimeter."
+    }
+  ],
+  "assessment_rules": "Say cannot_assess if foliage occludes the branch, wire, or bark. Never infer internal sap flow, root moisture, hidden rot, branch flexibility, or how firmly the wire holds from a still photo. Judge only visible wiring: wrap angle and spacing, gaps between wire and bark, crossed wires, foliage trapped under the wire, and visible bark damage. Do not call wiring incorrect merely because its route differs from the expert's if the wraps are evenly spaced, in visible contact with the bark, uncrossed, and free of trapped foliage."
+}

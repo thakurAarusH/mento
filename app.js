@@ -7,6 +7,17 @@ import { execFile } from 'node:child_process';
 import QRCode from 'qrcode';
 import { parseAssessment, mmss } from './lib/validate.js';
 import { renderLegal } from './lib/legal.js';
+import { getSkillsSummary, getSkill, validateSkillAndTask, buildAssessmentPrompt } from './lib/skills.js';
+
+export function migrateDatabase(db) {
+  const cols = new Set(db.prepare("PRAGMA table_info('sessions')").all().map((c) => c.name));
+  if (!cols.has('skill_id')) {
+    db.exec("ALTER TABLE sessions ADD COLUMN skill_id TEXT DEFAULT 'soldering'");
+  }
+  if (!cols.has('task_id')) {
+    db.exec("ALTER TABLE sessions ADD COLUMN task_id TEXT");
+  }
+}
 
 const rid = () => crypto.randomBytes(8).toString('hex');
 const now = () => new Date().toISOString();
@@ -16,6 +27,9 @@ const words = (s) => (String(s || '').toLowerCase().match(/[a-z0-9]{3,}/g) || []
 const VIDEO = { 'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov' };
 const isVideo = (b, mime) => (mime === 'video/webm' ? b.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3])) : b.subarray(4, 8).toString() === 'ftyp');
 const isJpeg = (b) => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+// Legacy rows predate skill profiles and were all soldering (matches the column DEFAULT).
+const sessionSkill = (s) => getSkill(s?.skill_id || 'soldering');
+const NO_PROFILE = { error: 'This session\'s skill profile is unavailable on the server, so its safety guidance cannot be shown. Ask the master to check the installation or create a new session.', code: 'skill_profile_unavailable' };
 
 export function createApp(o = {}) {
   const E = process.env;
@@ -34,6 +48,7 @@ export function createApp(o = {}) {
 
   const db = new DatabaseSync(path.join(C.dir, 'monozukuri.db'));
   db.exec(fs.readFileSync(new URL('./schema.sql', import.meta.url), 'utf8'));
+  migrateDatabase(db);
   const q = (s, ...a) => db.prepare(s).all(...a);
   const q1 = (s, ...a) => db.prepare(s).get(...a);
   const run = (s, ...a) => db.prepare(s).run(...a);
@@ -80,12 +95,14 @@ export function createApp(o = {}) {
     const oid = rid(); run('INSERT INTO observations VALUES(?,?,?,?,?,?,?)', oid, rec.session_id, rec.id, t, text, unc, source);
     run('INSERT INTO questions VALUES(?,?,?,?,?,?,?,?)', rid(), rec.session_id, oid, rec.id, t, `At ${mmss(t)} — ${text} What were you noticing or deciding at this point?`, 'open', now());
   }
+  // A clip only for records that genuinely come from a recording in their own session; help-derived records have none.
+  const clipOf = (k) => (k.recording_id && !q1('SELECT 1 FROM help WHERE id=?', k.question_id) && q1('SELECT 1 FROM recordings WHERE id=? AND session_id=?', k.recording_id, k.session_id) ? { url: fileUrl('rec', k.recording_id), t: k.t } : null);
   const approved = (sid) => q("SELECT * FROM knowledge WHERE session_id=? AND status='approved'", sid);
   function search(sid, text, onlyApproved = true) {
     const w = new Set(words(text));
     return q(`SELECT * FROM knowledge WHERE session_id=? ${onlyApproved ? "AND status='approved'" : ''}`, sid)
       .map((k) => ({ k, s: words([k.observed, k.verbatim, k.summary, k.cues, k.warnings, k.step, k.tool].join(' ')).filter((x) => w.has(x)).length }))
-      .filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3).map((x) => ({ ...x.k, clip: { url: fileUrl('rec', x.k.recording_id), t: x.k.t } }));
+      .filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3).map((x) => ({ ...x.k, clip: clipOf(x.k) }));
   }
 
   // ---- optional local AI (Ollama). Never faked: failures are surfaced. ----
@@ -127,21 +144,21 @@ export function createApp(o = {}) {
   async function assess(pr, buf, manual) {
     busy.add(pr.id);
     try {
+      const skill = sessionSkill(q1('SELECT skill_id FROM sessions WHERE id=?', pr.session_id));
       const kn = approved(pr.session_id); let r;
-      if (!kn.length) r = { status: 'cannot_assess', stage: '', evidence: '', confidence: 'low', knowledge_ids: [], feedback: 'No approved master knowledge exists for this task yet.', needs_help: true, source: 'rule' };
+      if (!skill) r = { status: 'cannot_assess', stage: '', evidence: '', confidence: 'low', knowledge_ids: [], feedback: 'Automatic check unavailable: this session\'s skill profile is missing, so no domain safety rules can be applied. Asking the master.', needs_help: true, source: 'rule' };
+      else if (!kn.length) r = { status: 'cannot_assess', stage: '', evidence: '', confidence: 'low', knowledge_ids: [], feedback: 'No approved master knowledge exists for this task yet.', needs_help: true, source: 'rule' };
       else {
         try {
           aiReady();
-          const list = kn.map((k) => ({ id: k.id, step: k.step, instruction: k.summary || k.verbatim, cues: k.cues, warnings: k.warnings }));
-          const prompt = `You coach an apprentice using ONLY these approved expert records: ${JSON.stringify(list)}. Look at the still image. Rules: say cannot_assess if the view is unclear or the joint is too small; never infer hidden defects, temperatures or electrical continuity; do not call something wrong merely because it differs from the expert; give corrective feedback only with visible evidence and a matching record id; use cautious language for safety. Return JSON {"status":"on_track|possible_issue|cannot_assess|safety_stop","stage":string,"evidence":string,"confidence":"low|medium|high","knowledge_ids":[ids],"feedback":string,"needs_help":boolean}.`;
-          r = { ...parseAssessment(await ollama(prompt, buf), kn.map((k) => k.id)), source: 'ollama:' + C.vModel };
+          r = { ...parseAssessment(await ollama(buildAssessmentPrompt(skill, kn), buf), kn.map((k) => k.id)), source: 'ollama:' + C.vModel };
         } catch (e) { r = { status: 'cannot_assess', stage: '', evidence: '', confidence: 'low', knowledge_ids: [], feedback: 'Automatic check unavailable: ' + e.message, needs_help: manual, source: 'unavailable' }; }
       }
       const aid = rid();
       run('INSERT INTO assessments VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', aid, pr.id, pr.session_id, r.status, r.stage, r.evidence, r.confidence, JSON.stringify(r.knowledge_ids), r.feedback, r.needs_help ? 1 : 0, r.source, now());
       emit(pr.session_id, 'assessment', { practice: pr.id, assessment: { ...r, id: aid } });
       const open = q1("SELECT id FROM help WHERE practice_id=? AND status IN ('pending','answered')", pr.id);
-      if (r.needs_help && (manual || r.status === 'safety_stop') && !open) openHelp(pr.session_id, pr.id, r.feedback, r.stage, buf, aid);
+      if (r.needs_help && (manual || r.status === 'safety_stop' || !skill) && !open) openHelp(pr.session_id, pr.id, r.feedback, r.stage, buf, aid);
     } finally { busy.delete(pr.id); }
   }
 
@@ -171,14 +188,26 @@ export function createApp(o = {}) {
     res.json({ ok: true });
   });
   app.get('/api/me', M, (req, res) => res.json({ ok: true, limits: { maxVideoMb: C.maxVideoMb, retentionDays: C.retDays }, aiConfigured: !!(C.ollama && C.vModel) }));
+  app.get('/api/skills', (req, res) => res.json({ skills: getSkillsSummary() }));
+  app.get('/api/skills/:id', (req, res) => {
+    const s = /^[a-z0-9_-]{1,64}$/.test(req.params.id) ? getSkill(req.params.id) : null;
+    if (!s) return res.status(404).json({ error: 'Skill profile not found.' });
+    res.json(s);
+  });
 
   // sessions (master)
   const mint = (sid) => { run('DELETE FROM tokens WHERE session_id=?', sid); const exp = new Date(Date.now() + C.ttlH * 36e5).toISOString(); for (const role of ['master', 'apprentice']) run('INSERT INTO tokens(token,session_id,role,expires_at) VALUES(?,?,?,?)', crypto.randomBytes(24).toString('base64url'), sid, role, exp); };
   app.post('/api/sessions', M, (req, res) => {
-    const { title, task = '', procedure = '' } = req.body || {};
+    const { title, task, procedure, skill_id, task_id } = req.body || {};
     if (typeof title !== 'string' || !title.trim() || title.length > 120) return res.status(400).json({ error: 'A title (max 120 characters) is required.' });
-    const id = rid(); run('INSERT INTO sessions VALUES(?,?,?,?,?)', id, title.trim(), String(task).slice(0, 1000), String(procedure).slice(0, 4000), now()); mint(id); ev(id, 'session_created', title);
-    res.status(201).json({ id });
+    for (const [f, v] of [['task', task], ['procedure', procedure], ['skill_id', skill_id], ['task_id', task_id]]) if (v != null && typeof v !== 'string') return res.status(400).json({ error: `${f} must be a string.` });
+    const sk = skill_id || 'soldering', tid = task_id || null;
+    const val = validateSkillAndTask(sk, tid);
+    if (!val.valid) return res.status(400).json({ error: val.error });
+    // Explicit non-empty text wins; otherwise the selected task template supplies the defaults.
+    const tk = (task?.trim() ? task : val.task?.title || '').slice(0, 1000), pc = (procedure?.trim() ? procedure : val.task?.default_procedure || '').slice(0, 4000);
+    const id = rid(); run('INSERT INTO sessions(id,title,task,procedure,skill_id,task_id,created_at) VALUES(?,?,?,?,?,?,?)', id, title.trim(), tk, pc, sk, tid, now()); mint(id); ev(id, 'session_created', title);
+    res.status(201).json({ id, skill_id: sk, task_id: tid, task: tk, procedure: pc });
   });
   app.get('/api/sessions', M, (req, res) => res.json(q('SELECT * FROM sessions ORDER BY created_at DESC')));
   app.delete('/api/sessions/:id', M, (req, res) => { if (!q1('SELECT 1 FROM sessions WHERE id=?', req.params.id)) return res.status(404).json({ error: 'Not found' }); deleteSession(req.params.id); emit(req.params.id, 'deleted'); res.json({ ok: true }); });
@@ -204,10 +233,15 @@ export function createApp(o = {}) {
   // phones
   app.post('/api/join', P(), (req, res) => {
     if (req.body?.consent !== true) return res.status(400).json({ error: 'Consent must be actively given (the box must be ticked).' });
+    // Resolve the safety context before recording consent or touching the token.
+    const s = q1('SELECT title,task,procedure,skill_id,task_id FROM sessions WHERE id=?', req.tok.session_id);
+    if (!s) return res.status(404).json({ error: 'Session not found.' });
+    const sk = sessionSkill(s);
+    if (!sk) return res.status(409).json(NO_PROFILE);
     run('UPDATE tokens SET consented_at=COALESCE(consented_at,?), last_seen=? WHERE token=?', now(), now(), req.tok.token);
-    const s = q1('SELECT title,task,procedure FROM sessions WHERE id=?', req.tok.session_id);
+    const skill = { id: sk.id, name: sk.name, safety_advisories: sk.safety_advisories, tools: sk.tools.map(({ id, name, purpose }) => ({ id, name, purpose })) };
     ev(req.tok.session_id, 'device_joined', req.tok.role + ' consented and joined');
-    res.json({ role: req.tok.role, session: s, limits: { maxVideoMb: C.maxVideoMb, maxRecSec: C.maxRecSec, snapshotMs: C.snapMs, maxFrameKb: C.maxFrameKb } });
+    res.json({ role: req.tok.role, session: s, skill, limits: { maxVideoMb: C.maxVideoMb, maxRecSec: C.maxRecSec, snapshotMs: C.snapMs, maxFrameKb: C.maxFrameKb } });
   });
   app.post('/api/ping', P(), (req, res) => { run('UPDATE tokens SET last_seen=? WHERE token=?', now(), req.tok.token); emit(req.tok.session_id, 'ping'); res.json({ ok: true }); });
 
@@ -263,11 +297,11 @@ export function createApp(o = {}) {
     const tk = tokOf(req), m = isMaster(req); if (!m && !tk) return res.status(401).json({ error: 'Not signed in.' });
     const sid = m ? req.query.session : tk.session_id; if (!sid) return res.status(400).json({ error: 'session required' });
     const t = String(req.query.q || '').trim();
-    res.json(t ? search(sid, t, !m) : q(`SELECT * FROM knowledge WHERE session_id=? ${m ? '' : "AND status='approved'"} ORDER BY created_at DESC`, sid).map((k) => ({ ...k, clip: { url: fileUrl('rec', k.recording_id), t: k.t } })));
+    res.json(t ? search(sid, t, !m) : q(`SELECT * FROM knowledge WHERE session_id=? ${m ? '' : "AND status='approved'"} ORDER BY created_at DESC`, sid).map((k) => ({ ...k, clip: clipOf(k) })));
   });
 
   // apprentice
-  app.post('/api/practice/start', P('apprentice'), consented, (req, res) => { const id = rid(); run('INSERT INTO practice(id,session_id,started_at) VALUES(?,?,?)', id, req.tok.session_id, now()); ev(req.tok.session_id, 'practice_started'); res.status(201).json({ id }); });
+  app.post('/api/practice/start', P('apprentice'), consented, (req, res) => { if (!sessionSkill(q1('SELECT skill_id FROM sessions WHERE id=?', req.tok.session_id))) return res.status(409).json(NO_PROFILE); const id = rid(); run('INSERT INTO practice(id,session_id,started_at) VALUES(?,?,?)', id, req.tok.session_id, now()); ev(req.tok.session_id, 'practice_started'); res.status(201).json({ id }); });
   app.post('/api/practice/:id/end', P('apprentice'), (req, res) => { const p = q1('SELECT * FROM practice WHERE id=? AND session_id=?', req.params.id, req.tok.session_id); if (!p) return res.status(404).json({ error: 'Not found' }); run('UPDATE practice SET ended_at=COALESCE(ended_at,?) WHERE id=?', now(), p.id); ev(p.session_id, 'practice_ended'); res.json({ ok: true }); });
   const lastAt = new Map();
   app.post('/api/practice/:id/snapshot', P('apprentice'), consented, raw(Math.ceil(C.maxFrameKb / 1024) + 1), (req, res) => {
@@ -306,6 +340,27 @@ export function createApp(o = {}) {
     const h = q1('SELECT * FROM help WHERE id=?', req.params.id); if (!h) return res.status(404).json({ error: 'Not found' });
     if (!['pending', 'answered', 'resolved', 'rejected', 'escalated'].includes(req.body?.status)) return res.status(400).json({ error: 'Invalid status' });
     run('UPDATE help SET status=? WHERE id=?', req.body.status, h.id); ev(h.session_id, 'help_' + req.body.status); emit(h.session_id, 'help'); res.json({ ok: true });
+  });
+  app.post('/api/help/:id/convert-to-knowledge', M, (req, res) => {
+    const h = q1('SELECT * FROM help WHERE id=?', req.params.id);
+    if (!h) return res.status(404).json({ error: 'Help request not found.' });
+    const existing = q1('SELECT id FROM knowledge WHERE session_id=? AND question_id=?', h.session_id, h.id);
+    if (existing) return res.status(409).json({ error: 'This help request has already been converted to draft knowledge.', code: 'already_converted', knowledgeId: existing.id });
+    if (h.status === 'rejected') return res.status(409).json({ error: 'A rejected help request cannot be converted into knowledge.', code: 'help_rejected' });
+    const rep = q1('SELECT * FROM replies WHERE help_id=? ORDER BY created_at DESC LIMIT 1', h.id);
+    if (!rep || !rep.text.trim()) return res.status(400).json({ error: 'Cannot convert a help request before replying to it.' });
+    const kid = rid();
+    // A typed reply is not evidence from any recording: recording_id stays '' (column is NOT NULL), so no clip is offered.
+    run('INSERT INTO knowledge(id,session_id,question_id,recording_id,t,observed,verbatim,summary,cues,warnings,step,tool,status,approved_at,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      kid, h.session_id, h.id, '', 0, h.question, rep.text.trim(), '', '', '', h.step || '', '', 'draft', null, now());
+    run("UPDATE help SET status='resolved' WHERE id=?", h.id);
+    ev(h.session_id, 'knowledge_draft_from_help', kid);
+    emit(h.session_id, 'help');
+    res.status(201).json({
+      knowledgeId: kid,
+      status: 'draft',
+      message: 'Answer saved as draft knowledge. Please review, add decision cues and warnings, and click Approve before it can be used by apprentices.'
+    });
   });
 
   app.get('/api/stream', (req, res) => {

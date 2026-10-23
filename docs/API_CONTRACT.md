@@ -10,6 +10,17 @@
 
 ---
 
+## 0. Contract Changes Developer B Must Apply Before Integrating the UI
+
+These backend changes on `feature/skill-engine` alter response shapes the frontend reads:
+
+1. **`clip` may be `null`** in `GET /api/knowledge` items and `POST /api/ask` answers. Knowledge converted from a help reply has no linked recording, so no video is offered. Render the "Play master's clip" control only when `clip` is an object; never read `clip.url` / `clip.t` unguarded. (The current `public/a.js` reads `a.clip.t` unconditionally and must be updated.)
+2. **`POST /api/help/:id/convert-to-knowledge` 409 responses now carry a `code`:** `already_converted` (includes `knowledgeId`, as before) or `help_rejected` (new: rejected tickets cannot be converted). Show `error` and hide/disable "Convert to draft" for rejected tickets.
+3. **`409 skill_profile_unavailable`** on `POST /api/join` and `POST /api/practice/start` (see those endpoints).
+4. **`POST /api/sessions`** returns the resolved `task` and `procedure`, and fills them from the task template when omitted (see that endpoint).
+
+---
+
 ## 1. Feature Implementation Status Matrix
 
 To maintain prototype integrity and academic honesty, every subsystem is classified into one of three explicit categories:
@@ -23,7 +34,7 @@ To maintain prototype integrity and academic honesty, every subsystem is classif
 - **Honest AI Fallback:** `/api/recordings/:id/analyze` returns HTTP 503 ("No local vision model configured") when Ollama is offline or unconfigured, without fabricating moments.
 - **Draft Knowledge Authoring & Explicit Approval Gate:** Answering a question creates a `draft` record. Content edits to approved records automatically revert them to `draft`. Apprentices can only fetch `status: 'approved'` records.
 - **Signed Expiring Media Links:** Private file access via `/f/:kind/:id?exp=...&sig=...` enforcing HMAC verification and expiration checks; tampering and expired tokens are rejected.
-- **Keyword Q&A Search & Reference Playback:** `/api/ask` tokenizes apprentice queries and ranks approved knowledge records, returning verbatim text, summary, warnings, and timestamped video link (`clip.url + '#t=' + t`).
+- **Keyword Q&A Search & Reference Playback:** `/api/ask` tokenizes apprentice queries and ranks approved knowledge records, returning verbatim text, summary, warnings, and — only for records captured from a recording — a timestamped video link (`clip.url + '#t=' + t`); `clip` is `null` otherwise.
 - **Automated Help Escalation on Search Miss:** When `/api/ask` finds zero approved records, it automatically creates a `help` ticket for the master.
 - **Snapshot Rate Limiting & Safety Stop Rules:** Practice snapshots are throttled. Ungrounded issues without an approved knowledge citation are automatically downgraded to `cannot_assess` with human escalation. `safety_stop` forces apprentice halt and opens a help request.
 - **Help Discussion & Resolution:** Master can reply to apprentice help requests (`/api/help/:id/reply`) and update statuses (`pending`, `answered`, `resolved`, `rejected`, `escalated`).
@@ -147,7 +158,7 @@ sequenceDiagram
 - **Access:** Public
 - **Parameters:** `:id` (`soldering` | `bonsai`)
 - **Response `200 OK`:** Full skill profile JSON (see Section 5 for schemas).
-- **Response `404 Not Found`:** `{"error": "Skill profile not found."}`
+- **Response `404 Not Found`:** `{"error": "Skill profile not found."}` — returned for unknown ids and for any id that is not 1–64 characters of `a-z`, `0-9`, `_`, `-` (so encoded path-traversal such as `..%2F..%2Fpackage` never reaches a lookup). The requested id is not echoed back. Profiles are served only from the in-memory registry loaded at startup; the id is never used to build a file path.
 
 ---
 
@@ -156,44 +167,67 @@ sequenceDiagram
 #### `POST /api/sessions`
 - **Description:** Master creates a new craft session associated with a skill domain and optional task template.
 - **Access:** Master only (`mz` cookie)
-- **Request Body:**
+- **Request Body (template defaults — recommended for new clients):**
+```json
+{
+  "title": "Bonsai Wiring — Juniper Secondary Branch",
+  "skill_id": "bonsai",
+  "task_id": "secondary_branch_wiring"
+}
+```
+- **Request Body (explicit custom text — still supported):**
 ```json
 {
   "title": "Bonsai Wiring — Juniper Secondary Branch",
   "skill_id": "bonsai",
   "task_id": "secondary_branch_wiring",
-  "task": "Secondary Branch Structural Wiring",
+  "task": "Wire the lower-left secondary branch only",
   "procedure": "1. Anchor wire around trunk.\n2. Wind at 45° angle.\n3. Bend branch into position."
 }
 ```
 - **Validation:**
-  - `title`: Required, 1–120 characters.
-  - `skill_id`: Optional string (`soldering` | `bonsai`). Defaults to `"soldering"`.
-  - `task_id`: Optional string matching a predefined task in `skill.tasks`.
-  - `task`: Optional string, max 1000 characters.
-  - `procedure`: Optional string, max 4000 characters.
-- **Response `201 Created`:**
+  - `title`: Required string, 1–120 characters.
+  - `skill_id`: Optional string matching a loaded profile. Omitted, `null` or `""` defaults to `"soldering"`.
+  - `task_id`: Optional string matching a task `id` in that profile's `tasks`. Omitted, `null` or `""` means no template (`task_id: null`).
+  - `task`, `procedure`: Optional strings. Any non-string, non-null value (number, array, object) returns HTTP 400; the same applies to a non-string `skill_id` / `task_id`.
+  - Length: `task` is stored up to 1000 characters and `procedure` up to 4000; longer text is truncated (unchanged legacy behaviour, kept so existing clients are not rejected).
+- **Backend-owned task defaults:** the server resolves the selected task from the validated profile.
+  - If `task` is omitted, `null`, empty or whitespace-only, it is set to the task template's `title`.
+  - If `procedure` is omitted, `null`, empty or whitespace-only, it is set to the template's `default_procedure`.
+  - A non-empty explicit value always takes precedence, independently per field (e.g. a custom `task` with the template `procedure`).
+  - With no `task_id`, there is no template: omitted fields are stored as `""` (legacy behaviour).
+  - The frontend therefore does not need to copy template text into the request; it should send `task` / `procedure` only when the master has typed custom text.
+- **Response `201 Created`:** includes the resolved, stored text so the client can display it without a second request.
 ```json
 {
   "id": "7f8b92c4a1e3d509",
   "skill_id": "bonsai",
-  "task_id": "secondary_branch_wiring"
+  "task_id": "secondary_branch_wiring",
+  "task": "Secondary Branch Structural Wiring",
+  "procedure": "1. Select wire diameter approximately 1/3 the thickness of the branch at its base.\n2. ..."
 }
 ```
+- **Response `400 Bad Request`:** `{"error": "..."}` for a missing title, a non-string field, an unknown `skill_id` or a `task_id` not in that skill.
 
 #### `POST /api/join`
 - **Description:** Device connects with token, provides active consent, and receives session and skill configuration.
 - **Access:** Device token (`x-token` header or query string `?t=`)
 - **Request Body:** `{"consent": true}`
-- **Validation:** `consent === true` is mandatory; unticked/false returns HTTP 400.
-- **Response `200 OK`:**
+- **Validation & order of checks** (nothing is written until every check passes):
+  1. Token must exist and be unexpired → otherwise `401`.
+  2. `consent === true` is mandatory → unticked/false returns `400`.
+  3. The session must exist → otherwise `404`.
+  4. The session's skill profile must be loaded → otherwise `409 skill_profile_unavailable` (below).
+  5. Only then is consent recorded on the token (`consented_at`, `last_seen`) and a `device_joined` event logged.
+- **Legacy sessions:** rows created before skill profiles existed have `skill_id = 'soldering'` (migration default) and `task_id: null`; a `NULL` `skill_id` is also treated as `soldering`. These join normally. Any other `skill_id` is never substituted.
+- **Response `200 OK`:** (actual response for a bonsai session created from the `secondary_branch_wiring` template; every tool keeps `id`, `name` and `purpose`)
 ```json
 {
   "role": "apprentice",
   "session": {
     "title": "Bonsai Wiring — Juniper Secondary Branch",
     "task": "Secondary Branch Structural Wiring",
-    "procedure": "1. Anchor wire around trunk...",
+    "procedure": "1. Select wire diameter approximately 1/3 the thickness of the branch at its base.\n2. Anchor the wire firmly around the main trunk or an opposing branch (minimum 1.5 anchor turns).\n3. Wind the wire along the branch at a steady 45° angle with even spacing.\n4. Ensure wire contacts the bark snugly without crushing it or trapping green foliage.\n5. Support the branch with both hands while applying gentle, steady bending pressure.\n6. Check branch holds new position without springing back or splitting at the junction.",
     "skill_id": "bonsai",
     "task_id": "secondary_branch_wiring"
   },
@@ -201,14 +235,37 @@ sequenceDiagram
     "id": "bonsai",
     "name": "Bonsai Cultivation & Wiring",
     "safety_advisories": [
-      "Sharp cutter hazard: Keep fingers clear of concave cutter jaws.",
-      "Branch fracture risk: Support branch while bending stiff lignified wood.",
-      "Cambium protection: Avoid wire overtightening that cuts into growing bark."
+      "Sharp cutter hazard: Concave branch cutters are razor-sharp; keep fingers clear of cutting jaws.",
+      "Branch fracture risk: Bending stiff lignified branches too fast can snap structural wood.",
+      "Cambium protection: Wires wound too tight will bite into growing tree bark and leave permanent scars.",
+      "Eye hazard: Aluminum/copper wire ends can whip back unexpectedly when cutting or uncoiling."
     ],
     "tools": [
-      { "id": "concave_cutter", "name": "Concave Branch Cutter" },
-      { "id": "aluminum_wire", "name": "Anodized Aluminum Wire (2mm-4mm)" },
-      { "id": "jin_pliers", "name": "Jin Pliers" }
+      {
+        "id": "concave_cutter",
+        "name": "Concave Branch Cutter",
+        "purpose": "Trimming branches flush with trunk to form a sunken healing wound"
+      },
+      {
+        "id": "aluminum_wire",
+        "name": "Anodized Aluminum Wire (1.5mm–3.5mm)",
+        "purpose": "Shaping branch direction and angle"
+      },
+      {
+        "id": "jin_pliers",
+        "name": "Jin Pliers",
+        "purpose": "Gripping and bending wire ends, and creating deadwood"
+      },
+      {
+        "id": "wire_cutters",
+        "name": "Bonsai Wire Cutters",
+        "purpose": "Cutting wire close to bark without damaging cambium"
+      },
+      {
+        "id": "wound_sealant",
+        "name": "Cut Paste / Wound Sealant",
+        "purpose": "Protecting exposed cuts from drying and rot"
+      }
     ]
   },
   "limits": {
@@ -219,6 +276,15 @@ sequenceDiagram
   }
 }
 ```
+- **Response `409 Conflict` — skill profile unavailable:** the session references a `skill_id` whose manifest is not loaded on this server (file removed, renamed or failing validation).
+```json
+{
+  "error": "This session's skill profile is unavailable on the server, so its safety guidance cannot be shown. Ask the master to check the installation or create a new session.",
+  "code": "skill_profile_unavailable"
+}
+```
+  - The invitation token, consent state and event log are left untouched, so the same QR code works again once the profile is restored.
+  - **Frontend handling:** treat `409` + `code: "skill_profile_unavailable"` as a blocking error. Do not proceed to the recording/practice screens, do not show a generic or cached safety card, and display `error` to the user (the existing `api()` helper already throws with `error` as the message). Offer "try again" rather than "rescan"; the token is still valid.
 
 ---
 
@@ -297,7 +363,9 @@ sequenceDiagram
 - **Description:** Retrieve knowledge records for the current session.
 - **Access:** Master (`mz` cookie) sees all records (`draft`, `approved`, `rejected`). Apprentice (`x-token`) receives ONLY `status: 'approved'` records.
 - **Query Params:** `?q=anchor` (optional keyword search).
-- **Response `200 OK`:** Array of knowledge records with signed video clip URLs (`clip.url` + `clip.t`).
+- **Response `200 OK`:** Array of knowledge records. Each has `clip`: either `{ "url": "/f/rec/<id>?exp=…&sig=…", "t": <seconds> }` or `null`.
+- **When `clip` is set:** only if the record genuinely originates from a recording — its `recording_id` is non-empty, refers to a recording in the same session, and the record was not converted from a help reply. Records answered from a video moment (`POST /api/questions/:id/answer`) keep their signed, timestamped clip.
+- **When `clip` is `null`:** help-derived knowledge (a typed reply is not evidence from any recording), including records converted before this rule existed that point at an unrelated recording. The server never substitutes another session recording.
 
 ---
 
@@ -307,6 +375,7 @@ sequenceDiagram
 - **Description:** Apprentice begins practice run.
 - **Access:** Apprentice token (`x-token`), consented.
 - **Response `201 Created`:** `{"id": "p8812c3f4a9b0011"}`
+- **Response `409 Conflict`:** `{"error": "...", "code": "skill_profile_unavailable"}` if the session's skill profile has become unavailable after the device joined. No practice row is created. Frontend handling is the same as for `/api/join`.
 
 #### `POST /api/practice/:id/snapshot`
 - **Description:** Apprentice phone sends camera frame snapshot for visual check.
@@ -315,6 +384,8 @@ sequenceDiagram
 - **Body:** Binary JPEG buffer (< 400 KB).
 - **Response `202 Accepted`:** `{"queued": true}` (Result dispatched via SSE).
 - **Rate Limit Response:** `{"queued": false, "reason": "rate limited"}` (Throttled if sent faster than snapshot interval).
+- **Missing skill profile:** if the session's profile is unavailable when a snapshot is assessed, the server does **not** call the vision model and does not fall back to another skill's rules. It stores and pushes `{"status": "cannot_assess", "confidence": "low", "knowledge_ids": [], "needs_help": true, "source": "rule", "feedback": "Automatic check unavailable: this session's skill profile is missing, so no domain safety rules can be applied. Asking the master."}` and opens a help request for the master (once per practice while a ticket is `pending`/`answered`, using the existing duplicate-ticket guard), including for automatic (non-manual) snapshots.
+- **AI unavailable:** with a valid profile but no local vision model, the honest `cannot_assess` / `source: "unavailable"` fallback is unchanged.
 
 #### `POST /api/ask`
 - **Description:** Apprentice searches approved knowledge using natural language question.
@@ -339,6 +410,7 @@ sequenceDiagram
   "helpRequested": false
 }
 ```
+- **`clip`:** same rule as `GET /api/knowledge` — `null` for help-derived answers, e.g. `{"id": "k8810e42ab012984", "step": "", "verbatim": "No. Dormant dry branches are brittle…", "summary": "", "warnings": "", "clip": null}`. The UI must not show a play button for these.
 - **Response `200 OK` (Knowledge Gap — Search Miss):**
 ```json
 {
@@ -380,12 +452,12 @@ sequenceDiagram
 - **Access:** Master only (`mz` cookie)
 - **Request Body:** *(Empty or optional overrides)*
 - **Safety Workflow Rules:**
-  1. Locates help ticket and latest master reply.
-  2. Finds or defaults `recording_id` from the session's recordings.
+  1. Locates help ticket. If already converted → `409 already_converted`. If its status is `rejected` → `409 help_rejected` (nothing written). If it has no master reply → `400`.
+  2. Uses the latest master reply. **No recording is attached:** a typed reply is not evidence that any session recording demonstrates the answer.
   3. Inserts a new row into `knowledge` using existing schema columns:
      - `session_id`: Ticket's session.
-     - `question_id`: `null` (or help ID).
-     - `recording_id`: Active session recording ID (or first recording in session).
+     - `question_id`: the help request's ID (reused as the link back to the ticket; see limitation below).
+     - `recording_id`: `""` (the column is `NOT NULL`; empty means "no linked recording"). Consequently the record's `clip` is `null` in every response.
      - `t`: 0.
      - `observed`: Ticket's question text.
      - `verbatim`: Master's reply text.
@@ -398,7 +470,14 @@ sequenceDiagram
      - `approved_at`: `null`.
      - `created_at`: `now()`.
   4. Updates help ticket status to `'resolved'`.
-  5. Emits `knowledge_draft` event to dashboard.
+  5. Logs a `knowledge_draft_from_help` event and pushes a `help` SSE update to the dashboard.
+- **Access errors:** without the master cookie (including with an apprentice or master *device* token) → `401`.
+- **Duplicate conversion:** a second conversion of the same ticket returns `409` with `{"error": "...", "code": "already_converted", "knowledgeId": "<existing id>"}`. This takes precedence, so a ticket rejected *after* conversion still reports its existing record.
+- **Rejected ticket:** `409` with `{"error": "A rejected help request cannot be converted into knowledge.", "code": "help_rejected"}`. The ticket status is left as `rejected`.
+- **Known limitation (`question_id` reuse):** to avoid changing the `knowledge` and `help` schemas, a converted record stores the help ID in `knowledge.question_id`. Consequences:
+  - Duplicate detection is a lookup on `(session_id, question_id)`; there is no database `UNIQUE` constraint. The check and insert run synchronously in one request handler, so a single server process cannot interleave them, but multiple server processes sharing one database could.
+  - `question_id` alone does not say whether it refers to a `questions` row or a `help` row. Help-derived records can be recognised by `question_id` matching a `help.id` (both are random 64-bit hex IDs, so collisions are not a practical concern).
+  - Knowledge stays session-isolated; converted records are never shared with other sessions.
 - **Response `201 Created`:**
 ```json
 {
@@ -439,14 +518,20 @@ mento/
 
 ### Manifest Schema & Validation Rules
 A valid skill JSON must define:
-- `id`: Lowercase alphanumeric identifier (`soldering`, `bonsai`).
-- `name`: Human-readable title (e.g., `"Electronics Soldering"`).
+- `id`: Identifier matching `^[a-z0-9_-]{1,64}$` (`soldering`, `bonsai`).
+- `name`: Non-empty human-readable title (e.g., `"Electronics Soldering"`).
 - `category`: Category string (e.g., `"Electronics & Hardware"`).
 - `description`: Scope summary.
-- `safety_advisories`: Array of critical safety warnings.
-- `tools`: Array of objects (`id`, `name`, `purpose`).
-- `tasks`: Array of objects (`id`, `title`, `summary`, `default_procedure`, `visual_cues`).
-- `assessment_rules`: Domain-specific vision constraints dynamically inserted into Ollama prompts.
+- `safety_advisories`: Non-empty array; every entry a non-empty string.
+- `tools`: Array of objects. Each needs an `id` matching `^[a-z0-9_-]{1,64}$`, a non-empty string `name`, and a string `purpose`.
+- `tasks`: Array of objects. Each needs an `id` matching `^[a-z0-9_-]{1,64}$`, a non-empty string `title`, and string `summary`, `default_procedure` and `visual_cues` (these may be empty).
+- Tool IDs must be unique within `tools`, and task IDs unique within `tasks`, so sessions (`task_id`) and knowledge records (`tool`) can reference them stably.
+- `assessment_rules`: Non-empty string of domain-specific vision constraints. Describe only what can be observed in a still photo (e.g. wrap spacing, crossed wires, trapped foliage), never properties a photo cannot establish (firmness, temperature, continuity).
+- **Loading:** a manifest that fails validation (or is not valid JSON) is skipped and logged with the reason (`[skills] Skipping <file>: <reason>`). If two files declare the same profile `id`, **neither** is loaded and the conflict is logged — the server does not silently pick one. Other profiles still load. Sessions that reference a skipped profile get `409 skill_profile_unavailable` on join.
+- The skills directory is resolved from the module's file URL (`fileURLToPath`), so installation paths containing spaces work.
+
+### Assessment Prompt Composition
+Every assessment prompt contains, in order: the approved session records (grounding), a **shared image-quality safeguard** applied to every skill, then the profile's `assessment_rules`, then the fixed feedback/grounding rules and JSON output contract. The shared safeguard requires `cannot_assess` when the image is blurry, out of focus, too dark, overexposed, occluded, cropped, too distant or otherwise insufficient for a reliable conclusion, and forbids inferring properties that cannot be established from the visible image. It cannot be removed or weakened by a profile. Server-side grounding is unchanged: `possible_issue` without a valid approved record id is downgraded to `cannot_assess` and escalated; `safety_stop` always escalates.
 
 ---
 

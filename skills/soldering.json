@@ -1,0 +1,36 @@
+{
+  "id": "soldering",
+  "name": "Electronics Soldering",
+  "category": "Electronics & Hardware",
+  "description": "Through-hole and wire soldering techniques for reliable electrical connections.",
+  "safety_advisories": [
+    "Hot iron hazard: Soldering iron tips reach 350°C–400°C. Never touch metal elements.",
+    "Fume inhalation: Rosin flux produces irritating fumes. Work in a well-ventilated area.",
+    "Eye protection: Molten solder or snipped component leads can fly into eyes.",
+    "Lead safety: Wash hands thoroughly after handling lead-based solder alloys."
+  ],
+  "tools": [
+    { "id": "iron", "name": "Temperature-Controlled Soldering Iron", "purpose": "Heating component leads and pads" },
+    { "id": "solder_wire", "name": "Rosin-Core Solder Wire (60/40 or SAC305)", "purpose": "Filler metal" },
+    { "id": "brass_sponge", "name": "Brass Wire Tip Cleaner", "purpose": "Cleaning oxidized solder off tip" },
+    { "id": "side_cutters", "name": "Flush Cutters", "purpose": "Trimming excess lead length after joint solidifies" },
+    { "id": "pcb_holder", "name": "PCB Clamp / Helping Hands", "purpose": "Holding workpiece stable" }
+  ],
+  "tasks": [
+    {
+      "id": "through_hole_resistor",
+      "title": "Through-Hole Resistor Soldering",
+      "summary": "Mount and solder an axial resistor onto a prototyping board with shiny, concave fillets.",
+      "default_procedure": "1. Bend leads at 90° and insert into PCB.\n2. Splay leads slightly on the underside.\n3. Clean and tin the iron tip.\n4. Apply tip to both pad and lead simultaneously for 2 seconds.\n5. Feed solder into the opposite side of the joint until a concave fillet forms.\n6. Remove solder wire, then remove iron tip.\n7. Allow joint to cool undisturbed for 3 seconds.\n8. Inspect fillet: shiny, concave meniscus with neither too little nor too much solder.",
+      "visual_cues": "Concave meniscus fillet, full 360° wetting around lead and copper pad, shiny finish, no bridges to adjacent pads."
+    },
+    {
+      "id": "wire_splice",
+      "title": "Stranded Wire Splicing & Tinning",
+      "summary": "Strip, twist, and tin stranded copper wires for solid lead-to-wire connections.",
+      "default_procedure": "1. Strip 10mm of insulation without nicking strands.\n2. Twist strands tightly clockwise.\n3. Heat wire underside and apply solder to top until flow is visible throughout strands.",
+      "visual_cues": "Individual wire strand contours still visible; solder thoroughly wetted without heavy bulbous lumps."
+    }
+  ],
+  "assessment_rules": "Say cannot_assess if the view is blurry, out of focus, or the joint is too small to inspect. Never guess hidden defects, internal trace connectivity, electrical continuity, or iron temperature. Only evaluate visible joint wetting, fillet shape, and bridge formation."
+}
