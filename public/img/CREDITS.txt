@@ -1,0 +1,42 @@
+MENTO — image credits
+=====================
+All images are real photographs or a historical print (none are AI-generated), downloaded from Wikimedia Commons
+and resized for the web. Changes: resized and re-compressed only.
+
+wave.jpg — "The Great Wave off Kanagawa" (c. 1831), Katsushika Hokusai
+  Source:  https://commons.wikimedia.org/wiki/File:The_Great_Wave_off_Kanagawa.jpg
+  Licence: Public domain
+
+soldering.jpg — "Soldering workbench", Windell Oskay (Sunnyvale, CA, USA)
+  Source:  https://commons.wikimedia.org/wiki/File:Soldering_workbench.jpg
+  Licence: CC BY 2.0 — https://creativecommons.org/licenses/by/2.0/
+
+bonsai.jpg — "Bonsai Tree", Rennett Stowe (USA)
+  Source:  https://commons.wikimedia.org/wiki/File:Bonsai_Tree_(3051517569).jpg
+  Licence: CC BY 2.0 — https://creativecommons.org/licenses/by/2.0/
+
+Not used: the solder-joint dataset listed in the project plan (github.com/furkanulger/solder-joint-dataset)
+has no licence file, so its images may not be redistributed.
+
+New design (October 2026) — from the team's design pack (frontendcode.zip, made with Lovable)
+------------------------------------------------------------------------------------------
+hero.jpg, bg-hero.jpg, bg-ink.jpg, bg-pagoda.jpg, bg-craft.jpg, bg-fuji.jpg, bg-wave.jpg
+  Source:  the design pack's src/assets folder, resized and re-compressed for the web.
+  Note:    these are illustrations supplied with the design (likely AI-generated), not photographs;
+           the statement at the top of this file applies only to the three Wikimedia images above.
+
+Fonts (public/fonts): Shippori Mincho and Zen Kaku Gothic New — SIL Open Font License 1.1,
+  self-hosted from Google Fonts so the app loads nothing from third parties.
+Icons on the landing page: Lucide (ISC licence), drawn inline.
+
+Skill photos added October 2026 (resized and re-compressed only)
+-----------------------------------------------------------------
+kintsugi.jpg — "Kintsugi on broken Kyūsu lid-top oblique PNr°1258", D-Kuru
+  Source:  https://commons.wikimedia.org/wiki/File:Kintsugi_on_broken_Ky%C5%ABsu_lid-top_oblique_PNr%C2%B01258.jpg
+  Licence: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+
+katana.jpg — "Des briques d'acier au katana - 2016-04-19" (forge of Tsuneharu Matsuda), MathieuMD
+  Source:  https://commons.wikimedia.org/wiki/File:Des_briques_d%27acier_au_katana_-_2016-04-19.jpg
+  Licence: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+
+custom.jpg — crop of bg-craft.jpg from the design pack (see above), used for "your own skill".

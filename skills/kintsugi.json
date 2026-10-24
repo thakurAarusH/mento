@@ -1,0 +1,177 @@
+{
+  "id": "kintsugi",
+  "name": "Kintsugi (Gold Joinery Repair)",
+  "category": "Japanese Traditional Craft",
+  "description": "Repairing broken ceramics with urushi lacquer and finishing the seams with gold, so the repair becomes part of the object's story.",
+  "safety_advisories": [
+    "Urushi allergy: Raw urushi lacquer causes severe skin rashes. Always wear nitrile gloves and long sleeves; clean skin with vegetable oil, then soap.",
+    "Sharp edges: Broken ceramic edges and shards cut easily. Handle pieces by their faces, not their broken edges.",
+    "Fine powders: Tonoko clay powder and gold powder must not be inhaled. Work without drafts and wear a mask when grinding or sanding.",
+    "Food safety: Only fully cured traditional urushi is food-safe. Do not use a repaired piece for food until the maker confirms it has fully cured."
+  ],
+  "tools": [
+    {
+      "id": "ki_urushi",
+      "name": "Raw urushi lacquer (ki-urushi)",
+      "purpose": "Base binder for glue, putty and coats"
+    },
+    {
+      "id": "mugi_urushi",
+      "name": "Mugi-urushi (wheat-flour urushi glue)",
+      "purpose": "Bonding broken pieces together"
+    },
+    {
+      "id": "sabi_urushi",
+      "name": "Sabi-urushi (tonoko putty)",
+      "purpose": "Filling chips, gaps and missing parts"
+    },
+    {
+      "id": "bengara",
+      "name": "Bengara red lacquer",
+      "purpose": "Thin undercoat line that holds the gold"
+    },
+    {
+      "id": "gold_powder",
+      "name": "Gold powder (keshi-fun / maru-fun)",
+      "purpose": "Final decorative seam"
+    },
+    {
+      "id": "makie_brush",
+      "name": "Fine maki-e brush",
+      "purpose": "Drawing thin, even lacquer lines"
+    },
+    {
+      "id": "hera",
+      "name": "Bamboo / wooden spatulas (hera)",
+      "purpose": "Mixing urushi and applying putty"
+    },
+    {
+      "id": "mawata",
+      "name": "Silk floss (mawata)",
+      "purpose": "Dusting gold powder onto tacky lacquer"
+    },
+    {
+      "id": "muro",
+      "name": "Humidity box (muro)",
+      "purpose": "Curing urushi at warm, humid conditions"
+    },
+    {
+      "id": "whetstone",
+      "name": "Whetstones / charcoal sticks",
+      "purpose": "Levelling cured putty and lacquer"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "joining_pieces",
+      "title": "Joining broken pieces with mugi-urushi",
+      "summary": "Bond the fragments of a broken bowl with wheat-flour urushi so the seam is tight and the profile stays true.",
+      "default_procedure": "1. Clean the broken edges and lightly bevel sharp edges with a file.\n2. Knead wheat flour with water, then mix with raw urushi about 1:1 into mugi-urushi.\n3. Apply a thin, even layer to one broken edge.\n4. Wait until the glue becomes slightly tacky.\n5. Press the pieces together, check alignment from all sides and fix with tape.\n6. Cure in the muro (warm and humid) for one to two weeks.\n7. Scrape off squeezed-out glue with a blade once cured.",
+      "visual_cues": "Pieces sit flush with no step at the seam, a hairline glue line, no glue smeared over the glaze, the rim forms one continuous curve."
+    },
+    {
+      "id": "gold_finishing",
+      "title": "Gold finishing of the seam (fun-maki)",
+      "summary": "Draw a thin red lacquer line over the cured seam and dust it with gold powder.",
+      "default_procedure": "1. Level the cured seam and putty with a whetstone or charcoal.\n2. Draw a thin, even bengara line exactly over the seam with a maki-e brush.\n3. Wait until the lacquer is just tacky.\n4. Dust gold powder onto the line with silk floss using light circular strokes.\n5. Cure in the muro for several days.\n6. For maru-fun, burnish the gold once fully cured.",
+      "visual_cues": "An even line of consistent width that follows the crack exactly, gold fully covering the red undercoat, no gold specks on the glaze around the line."
+    }
+  ],
+  "assessment_rules": "Say cannot_assess if the seam is out of focus, too small in the frame, or covered by glare. Never judge whether urushi is cured, whether the bond is strong, or whether the piece is food-safe from a photo. Judge only what is visible: alignment of the pieces at the seam, steps or gaps, squeezed-out glue on the glaze, and the evenness, width and coverage of the lacquer and gold line.",
+  "manual": "Standard kintsugi guidance (what books and workshops already cover):\n- Traditional kintsugi uses urushi lacquer: mugi-urushi (wheat flour + urushi) to glue, sabi-urushi (tonoko + urushi) to fill, then a thin lacquer line dusted with gold.\n- Urushi cures (hardens) by absorbing moisture: about 70-85 % humidity and 20-30 °C in a muro. Too dry and it stays soft; too wet and fast and it wrinkles.\n- Apply every layer thin; thick layers wrinkle and cure only on the surface. Wait between layers until fully cured (days to weeks).\n- Mugi-urushi is roughly 1:1 flour paste to urushi; sabi-urushi is tonoko kneaded with water then mixed with urushi.\n- Gold is dusted when the lacquer is \"just tacky\" (not wet, not dry); keshi-fun gives a matte finish, maru-fun can be burnished.\n- Wear gloves (urushi allergy), clean tools with vegetable oil, keep dust away from wet lacquer.\n- Synthetic epoxy \"kintsugi kits\" are faster but are not traditional and usually not food-safe.",
+  "terms": [
+    "kintsugi",
+    "urushi",
+    "lacquer",
+    "mugi urushi",
+    "sabi urushi",
+    "bengara",
+    "gold powder",
+    "makie brush",
+    "spatula",
+    "muro"
+  ],
+  "ja": {
+    "name": "金継ぎ",
+    "category": "日本の伝統工芸",
+    "description": "割れた陶磁器を漆で継ぎ、継ぎ目を金で仕上げて、修理そのものを器の景色にする技。",
+    "safety_advisories": [
+      "漆かぶれ：生漆はひどいかぶれを起こします。必ずニトリル手袋と長袖を着用し、肌に付いたら植物油でふき取ってから石けんで洗ってください。",
+      "鋭い割れ口：陶磁器の割れ口や破片は簡単に手を切ります。割れ口ではなく面を持って扱ってください。",
+      "細かい粉：砥の粉や金粉を吸い込まないでください。風のない所で作業し、研ぐ・磨く時はマスクを着けてください。",
+      "食品の安全：完全に硬化した本漆だけが食器として安全です。作り手が完全硬化を確認するまで、食べ物に使わないでください。"
+    ],
+    "tools": {
+      "ki_urushi": {
+        "name": "生漆（きうるし）",
+        "purpose": "接着剤・下地・塗りの基になる"
+      },
+      "mugi_urushi": {
+        "name": "麦漆",
+        "purpose": "割れた破片を接着する"
+      },
+      "sabi_urushi": {
+        "name": "錆漆（砥の粉の下地）",
+        "purpose": "欠け・すき間・欠損部を埋める"
+      },
+      "bengara": {
+        "name": "弁柄漆",
+        "purpose": "金をのせる細い下塗りの線"
+      },
+      "gold_powder": {
+        "name": "金粉（消粉・丸粉）",
+        "purpose": "仕上げの継ぎ目の装飾"
+      },
+      "makie_brush": {
+        "name": "蒔絵筆",
+        "purpose": "細く均一な漆の線を描く"
+      },
+      "hera": {
+        "name": "へら（竹・木）",
+        "purpose": "漆を練る、下地を付ける"
+      },
+      "mawata": {
+        "name": "真綿",
+        "purpose": "べたつく漆に金粉を蒔く"
+      },
+      "muro": {
+        "name": "漆風呂（むろ）",
+        "purpose": "温かく湿った環境で漆を硬化させる"
+      },
+      "whetstone": {
+        "name": "砥石・炭",
+        "purpose": "硬化した下地や漆を平らに研ぐ"
+      }
+    },
+    "tasks": {
+      "joining_pieces": {
+        "title": "麦漆で破片を接着する",
+        "summary": "割れた器の破片を麦漆で接着し、継ぎ目を密着させて器の形を正しく保つ。",
+        "default_procedure": "1. 割れ口を清掃し、鋭い角をやすりで軽く面取りする。\n2. 小麦粉を水で練り、生漆と約1:1で混ぜて麦漆を作る。\n3. 片方の割れ口に薄く均一に塗る。\n4. 少しべたつくまで待つ。\n5. 破片を合わせ、全方向から位置を確かめてテープで固定する。\n6. 漆風呂で1〜2週間硬化させる。\n7. 硬化後、はみ出した漆を刃物で削り取る。",
+        "visual_cues": "継ぎ目に段差がなく破片がそろっている、接着線が髪の毛ほど細い、釉薬の上に漆が付いていない、口縁が一続きの曲線になっている。"
+      },
+      "gold_finishing": {
+        "title": "継ぎ目の金仕上げ（粉蒔き）",
+        "summary": "硬化した継ぎ目に弁柄漆で細い線を描き、金粉を蒔く。",
+        "default_procedure": "1. 硬化した継ぎ目と下地を砥石か炭で平らにする。\n2. 蒔絵筆で継ぎ目の真上に、細く均一な弁柄漆の線を描く。\n3. 漆がほどよくべたつくまで待つ。\n4. 真綿で軽く円を描くように金粉を蒔く。\n5. 漆風呂で数日硬化させる。\n6. 丸粉の場合は、完全硬化後に磨く。",
+        "visual_cues": "ひびに正確に沿った均一な幅の線、赤い下塗りを完全に覆う金、線の周りの釉薬に金粉が散っていない。"
+      }
+    },
+    "manual": "一般的な金継ぎの手引き（本や教室ですでに教えている内容）：\n- 本漆の金継ぎでは、麦漆（小麦粉＋漆）で接着し、錆漆（砥の粉＋漆）で埋め、細い漆の線に金を蒔く。\n- 漆は湿気を吸って硬化する。漆風呂で湿度約70〜85％、20〜30℃。乾きすぎると固まらず、湿気が多く速すぎると縮む。\n- どの層も薄く塗る。厚塗りは縮み、表面しか硬化しない。各層は完全に硬化するまで（数日〜数週間）待つ。\n- 金は漆が「ほどよくべたつく」時（濡れすぎず乾きすぎず）に蒔く。消粉はつや消し、丸粉は磨ける。\n- 手袋を着ける（漆かぶれ）、道具は植物油で清掃、濡れた漆にほこりを寄せない。",
+    "terms": [
+      "金継ぎ",
+      "漆",
+      "生漆",
+      "麦漆",
+      "錆漆",
+      "弁柄漆",
+      "金粉",
+      "蒔絵筆",
+      "へら",
+      "室",
+      "砥石",
+      "欠け",
+      "ひび"
+    ]
+  }
+}

@@ -10,11 +10,31 @@
     "Eye hazard: Aluminum/copper wire ends can whip back unexpectedly when cutting or uncoiling."
   ],
   "tools": [
-    { "id": "concave_cutter", "name": "Concave Branch Cutter", "purpose": "Trimming branches flush with trunk to form a sunken healing wound" },
-    { "id": "aluminum_wire", "name": "Anodized Aluminum Wire (1.5mm–3.5mm)", "purpose": "Shaping branch direction and angle" },
-    { "id": "jin_pliers", "name": "Jin Pliers", "purpose": "Gripping and bending wire ends, and creating deadwood" },
-    { "id": "wire_cutters", "name": "Bonsai Wire Cutters", "purpose": "Cutting wire close to bark without damaging cambium" },
-    { "id": "wound_sealant", "name": "Cut Paste / Wound Sealant", "purpose": "Protecting exposed cuts from drying and rot" }
+    {
+      "id": "concave_cutter",
+      "name": "Concave Branch Cutter",
+      "purpose": "Trimming branches flush with trunk to form a sunken healing wound"
+    },
+    {
+      "id": "aluminum_wire",
+      "name": "Anodized Aluminum Wire (1.5mm–3.5mm)",
+      "purpose": "Shaping branch direction and angle"
+    },
+    {
+      "id": "jin_pliers",
+      "name": "Jin Pliers",
+      "purpose": "Gripping and bending wire ends, and creating deadwood"
+    },
+    {
+      "id": "wire_cutters",
+      "name": "Bonsai Wire Cutters",
+      "purpose": "Cutting wire close to bark without damaging cambium"
+    },
+    {
+      "id": "wound_sealant",
+      "name": "Cut Paste / Wound Sealant",
+      "purpose": "Protecting exposed cuts from drying and rot"
+    }
   ],
   "tasks": [
     {
@@ -32,5 +52,77 @@
       "visual_cues": "Slightly hollowed oval wound, clean edges with zero torn bark, wound paste covering the perimeter."
     }
   ],
-  "assessment_rules": "Say cannot_assess if foliage occludes the branch, wire, or bark. Never infer internal sap flow, root moisture, hidden rot, branch flexibility, or how firmly the wire holds from a still photo. Judge only visible wiring: wrap angle and spacing, gaps between wire and bark, crossed wires, foliage trapped under the wire, and visible bark damage. Do not call wiring incorrect merely because its route differs from the expert's if the wraps are evenly spaced, in visible contact with the bark, uncrossed, and free of trapped foliage."
+  "assessment_rules": "Say cannot_assess if foliage occludes the branch, wire, or bark. Never infer internal sap flow, root moisture, hidden rot, branch flexibility, or how firmly the wire holds from a still photo. Judge only visible wiring: wrap angle and spacing, gaps between wire and bark, crossed wires, foliage trapped under the wire, and visible bark damage. Do not call wiring incorrect merely because its route differs from the expert's if the wraps are evenly spaced, in visible contact with the bark, uncrossed, and free of trapped foliage.",
+  "manual": "Standard bonsai wiring and pruning guidance (what books and classes already cover):\n- Wire thickness about one third of the branch diameter; aluminium for deciduous and beginners, annealed copper for conifers.\n- Anchor the wire (trunk or a neighbouring branch), wind at about 45 °, evenly spaced, in contact with the bark but not tight.\n- Wire two branches of similar thickness with one piece where possible; avoid crossing wires and trapping leaves or buds.\n- Bend gradually while supporting the outside of the bend with the thumbs; stop at the first sign of cracking.\n- Check wire every few weeks in the growing season and remove it (cut, do not unwind) before it bites into the bark.\n- Prune with concave cutters flush to the trunk for a slightly hollow wound that heals flat; seal large cuts with cut paste.\n- Best seasons: wire deciduous trees before bud break or in autumn, conifers in late autumn to winter; avoid wiring weak or freshly repotted trees.",
+  "terms": [
+    "bonsai",
+    "wiring",
+    "pruning",
+    "concave cutter",
+    "aluminium wire",
+    "jin",
+    "shari",
+    "cut paste",
+    "repotting"
+  ],
+  "ja": {
+    "name": "盆栽の育成と針金かけ",
+    "category": "生きた工芸・園芸",
+    "description": "小さな樹の樹形づくりのための、枝の針金かけ、骨格剪定、舎利・神の仕上げ。",
+    "safety_advisories": [
+      "刃物の危険：又枝切りは非常に鋭利です。刃の間に指を入れないでください。",
+      "枝折れの危険：硬く木質化した枝を急に曲げると、幹となる枝が折れることがあります。",
+      "形成層の保護：きつく巻いた針金は成長する樹皮に食い込み、一生残る傷になります。",
+      "目の危険：アルミや銅の針金の端は、切ったりほどいたりする時に跳ね返ることがあります。"
+    ],
+    "tools": {
+      "concave_cutter": {
+        "name": "又枝切り（コブ切り）",
+        "purpose": "幹に沿って枝を切り、くぼんだ治りやすい切り口を作る"
+      },
+      "aluminum_wire": {
+        "name": "アルミ針金（1.5〜3.5mm）",
+        "purpose": "枝の向きと角度を付ける"
+      },
+      "jin_pliers": {
+        "name": "ジンやっとこ",
+        "purpose": "針金の端をつかんで曲げる、神（ジン）を作る"
+      },
+      "wire_cutters": {
+        "name": "針金切り",
+        "purpose": "形成層を傷つけずに樹皮の近くで針金を切る"
+      },
+      "wound_sealant": {
+        "name": "癒合剤（カットペースト）",
+        "purpose": "切り口の乾燥と腐れを防ぐ"
+      }
+    },
+    "tasks": {
+      "secondary_branch_wiring": {
+        "title": "二次枝の骨格づくりの針金かけ",
+        "summary": "二次枝に沿ってアルミ針金を一定の45°で巻き、枝の動きと向きを決める。",
+        "default_procedure": "1. 枝の付け根の太さの約1/3の太さの針金を選ぶ。\n2. 幹または反対側の枝にしっかり留める（最低1巻き半）。\n3. 一定の45°の角度、均等な間隔で枝に沿って巻く。\n4. 樹皮を押しつぶさず、葉を巻き込まずに、樹皮にぴったり沿わせる。\n5. 両手で枝を支えながら、ゆっくり一定の力で曲げる。\n6. 枝が戻ったり付け根で裂けたりせず、新しい位置を保つか確認する。",
+        "visual_cues": "均等な45°のピッチ、針金が樹皮に密着（すき間なし）、針金の交差なし、葉の巻き込みなし、きれいな留め巻き。"
+      },
+      "structural_pruning": {
+        "title": "骨格剪定",
+        "summary": "不要な枝や内向きの枝を又枝切りできれいに切り取る。",
+        "default_procedure": "1. 枝の付け根の膨らみ（ブランチカラー）を確認する。\n2. 又枝切りの刃を幹の軸に沿って縦に当てる。\n3. 一度のなめらかな動きで握り、少しくぼんだ切り口を作る。\n4. すぐに切り口の形成層の輪に癒合剤を塗る。",
+        "visual_cues": "少しくぼんだ楕円形の切り口、樹皮の裂けがないきれいな縁、周囲を覆う癒合剤。"
+      }
+    },
+    "manual": "一般的な盆栽の針金かけと剪定の手引き（本や教室ですでに教えている内容）：\n- 針金の太さは枝の直径の約1/3。落葉樹や初心者はアルミ、松柏類は焼きなました銅線。\n- 幹または隣の枝に留め、約45°で均等に、樹皮に沿わせて締めすぎずに巻く。\n- 太さの近い2本の枝は1本の針金で掛ける。交差や葉・芽の巻き込みを避ける。\n- 親指で曲げの外側を支えながら少しずつ曲げ、ひびの兆しで止める。\n- 生長期は数週間ごとに確認し、食い込む前に（ほどかずに切って）外す。\n- 又枝切りで幹に沿って切り、平らに治るくぼんだ切り口にする。大きな切り口は癒合剤で保護する。",
+    "terms": [
+      "盆栽",
+      "針金かけ",
+      "剪定",
+      "又枝切り",
+      "アルミ針金",
+      "ジン",
+      "シャリ",
+      "癒合剤",
+      "芽摘み",
+      "植え替え"
+    ]
+  }
 }

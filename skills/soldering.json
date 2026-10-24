@@ -10,11 +10,31 @@
     "Lead safety: Wash hands thoroughly after handling lead-based solder alloys."
   ],
   "tools": [
-    { "id": "iron", "name": "Temperature-Controlled Soldering Iron", "purpose": "Heating component leads and pads" },
-    { "id": "solder_wire", "name": "Rosin-Core Solder Wire (60/40 or SAC305)", "purpose": "Filler metal" },
-    { "id": "brass_sponge", "name": "Brass Wire Tip Cleaner", "purpose": "Cleaning oxidized solder off tip" },
-    { "id": "side_cutters", "name": "Flush Cutters", "purpose": "Trimming excess lead length after joint solidifies" },
-    { "id": "pcb_holder", "name": "PCB Clamp / Helping Hands", "purpose": "Holding workpiece stable" }
+    {
+      "id": "iron",
+      "name": "Temperature-Controlled Soldering Iron",
+      "purpose": "Heating component leads and pads"
+    },
+    {
+      "id": "solder_wire",
+      "name": "Rosin-Core Solder Wire (60/40 or SAC305)",
+      "purpose": "Filler metal"
+    },
+    {
+      "id": "brass_sponge",
+      "name": "Brass Wire Tip Cleaner",
+      "purpose": "Cleaning oxidized solder off tip"
+    },
+    {
+      "id": "side_cutters",
+      "name": "Flush Cutters",
+      "purpose": "Trimming excess lead length after joint solidifies"
+    },
+    {
+      "id": "pcb_holder",
+      "name": "PCB Clamp / Helping Hands",
+      "purpose": "Holding workpiece stable"
+    }
   ],
   "tasks": [
     {
@@ -32,5 +52,78 @@
       "visual_cues": "Individual wire strand contours still visible; solder thoroughly wetted without heavy bulbous lumps."
     }
   ],
-  "assessment_rules": "Say cannot_assess if the view is blurry, out of focus, or the joint is too small to inspect. Never guess hidden defects, internal trace connectivity, electrical continuity, or iron temperature. Only evaluate visible joint wetting, fillet shape, and bridge formation."
+  "assessment_rules": "Say cannot_assess if the view is blurry, out of focus, or the joint is too small to inspect. Never guess hidden defects, internal trace connectivity, electrical continuity, or iron temperature. Only evaluate visible joint wetting, fillet shape, and bridge formation.",
+  "manual": "Standard soldering guidance (what manuals and training courses already cover):\n- Iron temperature: about 315-370 °C for leaded solder, 350-400 °C for lead-free (SAC305). Use a tip that matches the pad size.\n- Clean the tip on a brass sponge and keep it tinned; an oxidised (dull grey) tip does not transfer heat.\n- Heat the pad and the lead together for 1-3 seconds, then feed solder to the joint (not to the iron) on the side opposite the tip.\n- A good joint is shiny (dull is normal for lead-free), concave and wets 360° around the lead; remove solder first, then the iron.\n- Let the joint cool without moving it; a disturbed joint looks grainy.\n- Defects: cold joint (dull, lumpy, poor wetting), too much solder (convex ball), too little (lead not covered), bridges between pads, lifted pads from overheating.\n- Use flux for difficult joints and rework; clean flux residue if required.\n- Trim leads after soldering with flush cutters, holding the lead end so it does not fly.\n- Through-hole: bend leads at 90 °, insert, splay slightly. Wires: strip without nicking strands, twist, tin until solder flows through the strands.",
+  "terms": [
+    "soldering",
+    "soldering iron",
+    "solder",
+    "flux",
+    "tip",
+    "pad",
+    "lead",
+    "joint",
+    "flush cutters",
+    "circuit board"
+  ],
+  "ja": {
+    "name": "電子工作のはんだ付け",
+    "category": "電子・ハードウェア",
+    "description": "確実な電気接続のための、スルーホール部品と電線のはんだ付け技術。",
+    "safety_advisories": [
+      "こての高温：はんだごての先端は350〜400℃になります。金属部分には絶対に触れないでください。",
+      "煙の吸入：ロジンフラックスは刺激性の煙を出します。換気の良い場所で作業してください。",
+      "目の保護：溶けたはんだや切ったリード線が目に飛ぶことがあります。",
+      "鉛の安全：鉛入りはんだを扱った後は、手をよく洗ってください。"
+    ],
+    "tools": {
+      "iron": {
+        "name": "温度調節式はんだごて",
+        "purpose": "部品のリード線とパッドを加熱する"
+      },
+      "solder_wire": {
+        "name": "ヤニ入りはんだ（60/40 または SAC305）",
+        "purpose": "接合用の金属"
+      },
+      "brass_sponge": {
+        "name": "真鍮製こて先クリーナー",
+        "purpose": "こて先の酸化したはんだを落とす"
+      },
+      "side_cutters": {
+        "name": "ニッパー（フラッシュカット）",
+        "purpose": "はんだが固まった後に余分なリード線を切る"
+      },
+      "pcb_holder": {
+        "name": "基板ホルダー／ヘルピングハンド",
+        "purpose": "作業物をしっかり固定する"
+      }
+    },
+    "tasks": {
+      "through_hole_resistor": {
+        "title": "スルーホール抵抗のはんだ付け",
+        "summary": "アキシャル抵抗を試作基板に実装し、光沢のある凹形のフィレットではんだ付けする。",
+        "default_procedure": "1. リード線を90°に曲げて基板に差し込む。\n2. 裏側でリード線を少し広げる。\n3. こて先をきれいにして予備はんだをする。\n4. こて先をパッドとリード線の両方に同時に2秒間当てる。\n5. こてと反対側からはんだを送り、凹形のフィレットを作る。\n6. 先にはんだを離し、次にこてを離す。\n7. 3秒間、動かさずに冷ます。\n8. フィレットを確認する：光沢があり凹形で、はんだの量が多すぎず少なすぎないこと。",
+        "visual_cues": "凹形のフィレット、リード線と銅パッドの全周にはんだがなじんでいる、光沢のある仕上がり、隣のパッドとのブリッジがない。"
+      },
+      "wire_splice": {
+        "title": "より線の接続と予備はんだ",
+        "summary": "より線の被覆をむき、ねじって予備はんだをし、確実な接続を作る。",
+        "default_procedure": "1. 芯線を傷つけないように被覆を10mmむく。\n2. 芯線を時計回りにしっかりねじる。\n3. 線の下側を加熱し、上からはんだを当てて、芯線全体にはんだが流れるのを確認する。",
+        "visual_cues": "一本一本の芯線の形がまだ見え、はんだが十分になじみ、大きな玉状の塊がない。"
+      }
+    },
+    "manual": "一般的なはんだ付けの手引き（マニュアルや講習ですでに教えている内容）：\n- こて温度：鉛入りはんだで約315〜370℃、鉛フリー（SAC305）で350〜400℃。パッドの大きさに合ったこて先を使う。\n- こて先は真鍮スポンジで清掃し、予備はんだを保つ。酸化した（くすんだ灰色の）こて先は熱を伝えない。\n- パッドとリード線を1〜3秒同時に加熱し、こての反対側からはんだを接合部に送る（こてに当てない）。\n- 良い接合は光沢があり（鉛フリーはくすむのが普通）、凹形でリード線の全周になじむ。先にはんだ、次にこてを離す。\n- 冷えるまで動かさない。動かした接合はざらついて見える。\n- 不良：イモはんだ（くすんで凸凹、なじみ不足）、はんだ過多（凸の玉）、不足（リード線が覆われない）、ブリッジ、過熱によるパッドはがれ。",
+    "terms": [
+      "はんだ付け",
+      "はんだごて",
+      "はんだ",
+      "こて先",
+      "フラックス",
+      "基板",
+      "パッド",
+      "リード",
+      "ニッパー",
+      "ヤニ入りはんだ"
+    ]
+  }
 }

@@ -1,4 +1,165 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Master dashboard — MENTO</title><link rel="stylesheet" href="/style.css"></head>
-<body><a class="skip" href="#app">Skip to content</a>
-<header class="top"><a href="/" class="brand">MENTO <span class="badge b-warn">Prototype</span></a><nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/cookies">Cookies</a></nav></header>
-<main id="app" class="wrap" tabindex="-1"><p>Loading…</p></main><div id="live" class="sr" role="status" aria-live="polite"></div><script type="module" src="/dash.js"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f9f6f1"><title data-i18n-title="MENTO — Experience becomes expertise">MENTO — Experience becomes expertise</title><meta name="description" content="MENTO captures the hands-on know-how of experienced masters and turns it into expert-approved lessons for students."><link rel="icon" href="/favicon.ico"><script src="/theme.js"></script><link rel="stylesheet" href="/style.css"></head>
+<body class="landing"><a class="skip" href="#app" data-i18n="Skip to content">Skip to content</a>
+<div class="petals" id="petals" aria-hidden="true"></div>
+<header class="top"><a href="/" class="brand">MENTO <span class="badge b-warn" data-i18n="Prototype">Prototype</span></a>
+  <nav class="l-nav" aria-label="Main" data-i18n-attr="aria-label:Main"><a href="/dashboard" data-i18n="Master Dashboard">Master Dashboard</a><a href="/m.html" data-i18n="Master Camera">Master Camera</a><a href="/a.html" data-i18n="Student Session">Student Session</a></nav></header>
+<main id="app" tabindex="-1">
+
+  <!-- hero -->
+  <section class="l-sec l-hero" id="hero" aria-labelledby="hero-t">
+    <div class="l-in l-hero-grid">
+      <div>
+        <p class="hanko-line"><span class="hanko" aria-hidden="true">匠</span><span data-i18n="ものづくり — the spirit of making things well">ものづくり — the spirit of making things well</span></p>
+        <h1 id="hero-t" data-i18n-html="Experience becomes &lt;em&gt;expertise.&lt;/em&gt;">Experience becomes <em>expertise.</em></h1>
+        <p class="lead" data-i18n="Manuals explain the standard steps. MENTO captures what they cannot: why a master does things their way, how they know a moment is right, and what they change when conditions change — and turns it into lessons the master approves.">Manuals explain the standard steps. MENTO captures what they cannot: why a master does things their way, how they know a moment is right, and what they change when conditions change — and turns it into lessons the master approves.</p>
+        <p class="l-cta"><a class="btn primary" href="#how"><span data-i18n="See how it works">See how it works</span> <span class="ico" data-icon="arrow"></span></a></p>
+      </div>
+      <!-- hero visual: an ensō brush circle; skill passes from master (師) through the craft (技) to the student (弟) -->
+      <div class="hero-art" aria-hidden="true">
+        <svg class="enso" viewBox="0 0 520 520">
+          <defs>
+            <filter id="brush" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>
+            <marker id="hm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--primary)"/></marker>
+          </defs>
+          <circle cx="260" cy="260" r="236" fill="none" stroke="var(--primary)" stroke-width="1" stroke-dasharray="2 12" opacity=".45" class="enso-orbit"/>
+          <circle cx="260" cy="260" r="150" fill="var(--paper)" opacity=".75"/>
+          <g filter="url(#brush)">
+            <path class="enso-stroke" d="M 300 86 A 176 176 0 1 1 214 92" fill="none" stroke="var(--brush)" stroke-width="30" stroke-linecap="round" pathLength="1"/>
+            <path class="enso-stroke thin" d="M 318 98 A 160 160 0 1 1 232 100" fill="none" stroke="var(--brush)" stroke-width="6" stroke-linecap="round" opacity=".35" pathLength="1"/>
+          </g>
+          <text x="260" y="300" text-anchor="middle" class="enso-kanji">技</text>
+          <path d="M 120 128 Q 70 260 150 380" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="6 7" marker-end="url(#hm)" class="enso-flow"/>
+          <path d="M 370 140 Q 450 260 392 380" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="6 7" marker-end="url(#hm)" class="enso-flow"/>
+          <g class="enso-seal" transform="translate(96 98) rotate(-4)"><rect x="-30" y="-30" width="60" height="60" rx="4" fill="var(--primary)"/><text y="13" text-anchor="middle" class="seal-t">師</text></g>
+          <g class="enso-seal s2" transform="translate(424 424) rotate(5)"><rect x="-30" y="-30" width="60" height="60" rx="4" fill="var(--paper)" stroke="var(--primary)" stroke-width="3"/><text y="13" text-anchor="middle" class="seal-t red">弟</text></g>
+          <circle cx="438" cy="104" r="34" fill="var(--primary)" class="enso-sun"/>
+        </svg>
+        <span class="vtext">経験は技になる</span>
+      </div>
+      <!-- stickers: drag them around, they peel and lift (decorative) -->
+      <div class="stickers" aria-hidden="true">
+        <span class="sticker s-red" style="--x:70%;--y:0%;--r:-8deg"><b>録</b><span data-i18n="Record once">Record once</span></span>
+        <span class="sticker s-ink" style="--x:84%;--y:58%;--r:7deg"><b>承</b><span data-i18n="Master-approved">Master-approved</span></span>
+        <span class="sticker s-cream" style="--x:50%;--y:80%;--r:-4deg"><b>和</b><span>English · 日本語</span></span>
+      </div>
+    </div>
+    <!-- three things MENTO really does (no invented numbers) -->
+    <div class="l-in"><div class="l-highlights">
+      <div class="hl"><span class="hl-seal">問</span><h3 data-i18n="Asks why, not what">Asks why, not what</h3><p data-i18n="The AI watches the demonstration and asks about the reasons, instincts and judgement a manual can't hold.">The AI watches the demonstration and asks about the reasons, instincts and judgement a manual can't hold.</p></div>
+      <div class="hl"><span class="hl-seal ink">承</span><h3 data-i18n="The master has the last word">The master has the last word</h3><p data-i18n="The AI only drafts. Students see nothing until the master has checked and approved it.">The AI only drafts. Students see nothing until the master has checked and approved it.</p></div>
+      <div class="hl"><span class="hl-seal light">工</span><h3 data-i18n="Lives in your workshop">Lives in your workshop</h3><p data-i18n="Runs on your own computer with a phone as the camera, in English or Japanese.">Runs on your own computer with a phone as the camera, in English or Japanese.</p></div>
+    </div></div>
+  </section>
+
+  <!-- problem -->
+  <section class="l-sec" id="problem" aria-labelledby="pr-t"><div class="l-in"><div class="l-ink">
+    <span class="big-kanji" aria-hidden="true">匠</span>
+    <div class="l-two">
+      <div><p class="eyebrow"><span data-i18n="The problem">The problem</span> <span class="jp">課題 · かだい</span></p><h2 id="pr-t" data-i18n="The most valuable knowledge is never written down.">The most valuable knowledge is never written down.</h2></div>
+      <ul class="l-why">
+        <li data-i18n="Senior craftspeople retire and their know-how leaves with them">Senior craftspeople retire and their know-how leaves with them</li>
+        <li data-i18n="Training newcomers takes the best people away from their work">Training newcomers takes the best people away from their work</li>
+        <li data-i18n="Manuals capture the steps, never the judgement behind them">Manuals capture the steps, never the judgement behind them</li>
+      </ul>
+    </div>
+  </div></div></section>
+
+  <!-- how it works: four identical step cards -->
+  <section class="l-sec" id="how" aria-labelledby="how-t">
+    <div class="l-in">
+      <p class="eyebrow"><span data-i18n="How it works">How it works</span> <span class="jp">仕組み · しくみ</span></p>
+      <h2 id="how-t" data-i18n="Four simple steps from master to apprentice.">Four simple steps from master to apprentice.</h2>
+      <ol class="l-steps">
+        <li class="l-box reveal"><div class="step-top"><span class="step-ico" data-icon="video"></span><span class="num">一 · 01</span></div><h3 data-i18n="Master demonstrates">Master demonstrates</h3><p data-i18n="The master records a real task on a phone. No studio, no script.">The master records a real task on a phone. No studio, no script.</p></li>
+        <li class="l-box reveal"><div class="step-top"><span class="step-ico" data-icon="ask"></span><span class="num">二 · 02</span></div><h3 data-i18n="AI asks">AI asks</h3><p data-i18n="The AI finds the key moments and, using the manual as background, asks about what the manual does not explain.">The AI finds the key moments and, using the manual as background, asks about what the manual does not explain.</p></li>
+        <li class="l-box reveal"><div class="step-top"><span class="step-ico" data-icon="shield"></span><span class="num">三 · 03</span></div><h3 data-i18n="Master reviews">Master reviews</h3><p data-i18n="Typed or spoken answers become knowledge drafts. Only what the master approves is ever shown to students.">Typed or spoken answers become knowledge drafts. Only what the master approves is ever shown to students.</p></li>
+        <li class="l-box reveal"><div class="step-top"><span class="step-ico" data-icon="camera"></span><span class="num">四 · 04</span></div><h3 data-i18n="Student practices">Student practices</h3><p data-i18n="Students join with a code, study the lessons and practise with camera checks tied to the master's own clip.">Students join with a code, study the lessons and practise with camera checks tied to the master's own clip.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- features -->
+  <section class="l-sec" id="features" aria-labelledby="ft-t">
+    <div class="l-in">
+      <p class="eyebrow"><span data-i18n="Why MENTO">Why MENTO</span> <span class="jp">信頼 · しんらい</span></p>
+      <h2 id="ft-t" data-i18n="Built on trust, not guesswork.">Built on trust, not guesswork.</h2>
+      <div class="l-feats" id="feats">
+        <div class="feat l-box"><span class="feat-blob"></span><span class="ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6"/><circle cx="28" cy="3" r="2.5" fill="currentColor"/></svg><span class="ico" data-icon="book"></span></span>
+          <div><h3><span data-i18n="Grounded answers only">Grounded answers only</span> <span class="jp">根拠</span></h3><p data-i18n="Every tip a student sees comes from knowledge the master approved. If the evidence is unclear, MENTO says it cannot assess.">Every tip a student sees comes from knowledge the master approved. If the evidence is unclear, MENTO says it cannot assess.</p></div><span class="feat-stroke"></span></div>
+        <div class="feat l-box"><span class="feat-blob"></span><span class="ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6"/><circle cx="28" cy="3" r="2.5" fill="currentColor"/></svg><span class="ico" data-icon="user"></span></span>
+          <div><h3><span data-i18n="Human in the loop">Human in the loop</span> <span class="jp">人</span></h3><p data-i18n="Students' questions go straight to the master. The AI only drafts; nothing is approved automatically.">Students' questions go straight to the master. The AI only drafts; nothing is approved automatically.</p></div><span class="feat-stroke"></span></div>
+        <div class="feat l-box"><span class="feat-blob"></span><span class="ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6"/><circle cx="28" cy="3" r="2.5" fill="currentColor"/></svg><span class="ico" data-icon="cpu"></span></span>
+          <div><h3><span data-i18n="Local-first">Local-first</span> <span class="jp">地元</span></h3><p data-i18n="Runs on your own computer: vision AI, speech-to-text and read-aloud voices. Cloud AI is optional and always falls back to local.">Runs on your own computer: vision AI, speech-to-text and read-aloud voices. Cloud AI is optional and always falls back to local.</p></div><span class="feat-stroke"></span></div>
+        <div class="feat l-box"><span class="feat-blob"></span><span class="ring"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6"/><circle cx="28" cy="3" r="2.5" fill="currentColor"/></svg><span class="ico" data-icon="lock"></span></span>
+          <div><h3><span data-i18n="Private by design">Private by design</span> <span class="jp">秘密</span></h3><p data-i18n="Consent on every device, personal master accounts and per-session invitations keep recordings inside your workshop.">Consent on every device, personal master accounts and per-session invitations keep recordings inside your workshop.</p></div><span class="feat-stroke"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- skills (filled from /api/skills, in the interface language) -->
+  <section class="l-sec" id="skills" aria-labelledby="sk-t">
+    <div class="l-in">
+      <p class="eyebrow"><span data-i18n="Ready-made skills">Ready-made skills</span> <span class="jp">技 · わざ</span></p>
+      <h2 id="sk-t" data-i18n="One platform. Any craft.">One platform. Any craft.</h2>
+      <p class="lead" data-i18n="Each skill is a simple profile of tasks, tools, safety notes and a short manual. Four come ready to use; masters can describe their own craft in a minute.">Each skill is a simple profile of tasks, tools, safety notes and a short manual. Four come ready to use; masters can describe their own craft in a minute.</p>
+      <div class="l-skills" id="l-skills"></div>
+    </div>
+  </section>
+
+  <!-- technical -->
+  <section class="l-sec l-tech" id="tech" aria-labelledby="tc-t">
+    <div class="l-in">
+      <p class="eyebrow"><span data-i18n="Technical">Technical</span> <span class="jp">技術 · ぎじゅつ</span></p>
+      <h2 id="tc-t" data-i18n="Under the hood.">Under the hood.</h2>
+      <p class="lead" data-i18n="One reusable engine. Skills are configuration profiles, not separate apps. Everything runs locally by default.">One reusable engine. Skills are configuration profiles, not separate apps. Everything runs locally by default.</p>
+      <div id="flows"></div>
+      <div class="l-stack" id="l-stack"></div>
+      <div class="l-princ reveal">
+        <div><b data-i18n="Grounded">Grounded</b><span data-i18n="Answers must cite approved knowledge">Answers must cite approved knowledge</span></div>
+        <div><b data-i18n="Honest">Honest</b><span data-i18n="Says “cannot assess” when unsure">Says “cannot assess” when unsure</span></div>
+        <div><b data-i18n="Private">Private</b><span data-i18n="Recordings stay on your computer">Recordings stay on your computer</span></div>
+        <div><b data-i18n="Isolated">Isolated</b><span data-i18n="Per-session access and consent">Per-session access and consent</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- privacy -->
+  <section class="l-sec" aria-labelledby="priv"><div class="l-in">
+    <div class="l-box l-priv"><h2 id="priv" data-i18n="Private by design">Private by design</h2>
+      <ul class="plain"><li id="priv-ai" data-i18n="Video, audio and knowledge stay on the master's computer. The AI (vision model, speech-to-text and read-aloud) runs locally, with no cloud AI.">Video, audio and knowledge stay on the master's computer. The AI (vision model, speech-to-text and read-aloud) runs locally, with no cloud AI.</li>
+      <li data-i18n="The AI never decides why the master did something: it asks, and the master's own words are kept and labelled.">The AI never decides why the master did something: it asks, and the master's own words are kept and labelled.</li>
+      <li data-i18n="Students only ever see knowledge the master has approved.">Students only ever see knowledge the master has approved.</li></ul>
+      <p class="hint"><a href="/privacy" data-i18n="Privacy">Privacy</a> · <a href="/terms" data-i18n="Terms">Terms</a> · <a href="/cookies" data-i18n="Cookies">Cookies</a></p></div>
+  </div></section>
+
+  <!-- the three ways in, once more at the very end -->
+  <section class="l-sec l-final" id="start" aria-labelledby="start-t"><div class="l-in"><div class="l-cta-box">
+    <div class="wash-red" style="background-image:url(/img/bg-wave.jpg)"></div>
+    <div class="l-cta-in">
+      <p class="tagline">技を未来へ</p>
+      <h2 id="start-t" data-i18n="Keep your expertise alive.">Keep your expertise alive.</h2>
+      <p data-i18n="Record a demonstration today; your students learn from it for years.">Record a demonstration today; your students learn from it for years.</p>
+      <div class="l-doors">
+        <section class="door" aria-labelledby="d1"><span class="door-ico" data-icon="monitor"></span><h3 id="d1" data-i18n="Master Dashboard">Master Dashboard</h3>
+          <p data-i18n="Create sessions, answer the AI's questions, check the knowledge it drafts and approve it for your students.">Create sessions, answer the AI's questions, check the knowledge it drafts and approve it for your students.</p>
+          <a class="btn primary" href="/dashboard" data-i18n="Open the dashboard">Open the dashboard</a>
+          <div class="door-extra"><p class="hint" data-i18n="Sign in with your username, or create a master account. You stay signed in for 30 days.">Sign in with your username, or create a master account. You stay signed in for 30 days.</p></div></section>
+        <section class="door" aria-labelledby="d2"><span class="door-ico" data-icon="video"></span><h3 id="d2" data-i18n="Master Camera">Master Camera</h3>
+          <p data-i18n="Create a session or pick an existing one, record your demonstration, upload it and start the AI. Questions then appear on the laptop.">Create a session or pick an existing one, record your demonstration, upload it and start the AI. Questions then appear on the laptop.</p>
+          <a class="btn primary" href="/m.html" data-i18n="Open the master phone app">Open the master phone app</a>
+          <div class="entry-qr" id="qr-m" hidden><img alt="QR code to open the master phone app" data-i18n-attr="alt:QR code to open the master phone app" width="120" height="120"><span class="hint" data-i18n="On the laptop? Scan this with your phone.">On the laptop? Scan this with your phone.</span></div></section>
+        <section class="door" aria-labelledby="d3"><span class="door-ico" data-icon="user"></span><h3 id="d3" data-i18n="Student Session">Student Session</h3>
+          <p data-i18n="Enter the 6-character code your master gives you (shown on their dashboard and phone).">Enter the 6-character code your master gives you (shown on their dashboard and phone).</p>
+          <form id="jf" class="code-form"><label for="code" class="sr" data-i18n="Session code">Session code</label><input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="7" placeholder="K7PM2Q" required><button class="btn primary" data-i18n="Join as a student">Join as a student</button></form>
+          <div class="entry-qr" id="qr-a" hidden><img alt="QR code to open the student app" data-i18n-attr="alt:QR code to open the student app" width="120" height="120"><span class="hint" data-i18n="Or scan to open the student app on a phone.">Or scan to open the student app on a phone.</span></div></section>
+      </div>
+      <p id="lan" class="notice warn" hidden><strong data-i18n="Phones can't reach &quot;localhost&quot;.">Phones can't reach "localhost".</strong><span data-i18n="Open this page through the HTTPS tunnel address (PUBLIC_URL) so the QR codes work and phones can use the camera.">Open this page through the HTTPS tunnel address (PUBLIC_URL) so the QR codes work and phones can use the camera.</span></p>
+    </div>
+  </div></div></section>
+</main>
+<footer class="l-foot"><div class="l-in row sp">
+  <span class="brand">MENTO</span>
+  <span class="row"><span data-i18n="Experience becomes expertise.">Experience becomes expertise.</span> <span class="jp">経験は技になる</span></span>
+  <span class="row"><a href="/privacy" data-i18n="Privacy">Privacy</a><a href="/terms" data-i18n="Terms">Terms</a><a href="/cookies" data-i18n="Cookies">Cookies</a></span>
+</div></footer>
+<div id="live" class="sr" role="status" aria-live="polite"></div><script type="module" src="/landing.js"></script></body></html>

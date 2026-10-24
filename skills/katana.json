@@ -1,0 +1,183 @@
+{
+  "id": "katana",
+  "name": "Japanese Swordsmithing (Katana Forging)",
+  "category": "Japanese Traditional Craft",
+  "description": "Forging a Japanese sword from tamahagane steel: folding and forge-welding, combining hard and soft steel, and hardening the edge with clay and a water quench.",
+  "safety_advisories": [
+    "Extreme heat: Steel at welding heat (about 1,300 °C) and the forge cause severe burns. Wear cotton or wool clothing, never synthetics, and keep water at hand.",
+    "Flying scale and sparks: Hot scale flies off with every blow. Eye protection is required for everyone near the anvil.",
+    "Hammer coordination: The smith's small hammer sets the rhythm for the strikers' sledges. Never step into the striking area or strike out of turn.",
+    "Carbon monoxide: Charcoal forges produce carbon monoxide. Work only with good ventilation.",
+    "Quench steam: The water quench throws boiling steam. Keep hands and face clear of the tank.",
+    "Legal note: In Japan only licensed swordsmiths may make swords. This profile documents a licensed smith's work for teaching."
+  ],
+  "tools": [
+    {
+      "id": "tamahagane",
+      "name": "Tamahagane steel",
+      "purpose": "Raw steel from the tatara smelter, sorted by carbon content"
+    },
+    {
+      "id": "hodo",
+      "name": "Forge (hodo) with box bellows (fuigo)",
+      "purpose": "Heating the steel evenly with pine charcoal"
+    },
+    {
+      "id": "charcoal",
+      "name": "Pine charcoal (matsuzumi)",
+      "purpose": "Clean, even fuel"
+    },
+    {
+      "id": "kozuchi",
+      "name": "Smith's hammer (kozuchi)",
+      "purpose": "Guiding blows and shaping"
+    },
+    {
+      "id": "ozuchi",
+      "name": "Strikers' sledgehammers (ōzuchi)",
+      "purpose": "Heavy forging blows from the assistants"
+    },
+    {
+      "id": "tekobo",
+      "name": "Handle bar (teko-bō) and tongs (hashi)",
+      "purpose": "Holding the billet in the fire and on the anvil"
+    },
+    {
+      "id": "straw_ash",
+      "name": "Straw ash and clay slurry",
+      "purpose": "Protecting the steel from oxidation during welding"
+    },
+    {
+      "id": "tagane",
+      "name": "Chisel (tagane)",
+      "purpose": "Cutting the billet for folding"
+    },
+    {
+      "id": "yakiba_clay",
+      "name": "Hardening clay (yakiba-tsuchi)",
+      "purpose": "Controlling cooling for the hamon"
+    },
+    {
+      "id": "mizubune",
+      "name": "Water tank (mizubune)",
+      "purpose": "Quenching the blade"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "folding",
+      "title": "Folding and forge-welding (orikaeshi tanren)",
+      "summary": "Heat the stacked billet to welding heat, weld it, cut and fold it repeatedly to even out carbon and remove slag.",
+      "default_procedure": "1. Heat the billet in the forge until it reaches welding heat.\n2. Coat it with straw ash and clay slurry, and heat again.\n3. Weld with light blows first, then heavier blows from the strikers.\n4. Draw the billet out to about twice its length.\n5. Cut it halfway across with the chisel and fold it back on itself.\n6. Repeat, changing the fold direction, for the planned number of folds.",
+      "visual_cues": "Even heat colour along the whole billet, flux coating covering the surface, a flat billet without open seams or cracks after each weld."
+    },
+    {
+      "id": "clay_quench",
+      "title": "Clay application and quench (tsuchioki & yaki-ire)",
+      "summary": "Apply thick clay to the spine and sides and a thin layer to the edge, heat evenly and quench to form the hamon and curvature.",
+      "default_procedure": "1. Clean and degrease the shaped blade.\n2. Apply a thin layer of clay over the edge and a thick layer over the spine and sides.\n3. Draw the hamon pattern and any ashi lines in the clay and let it dry.\n4. In a darkened forge, heat the blade evenly along its length to hardening temperature.\n5. Quench edge-first into the water tank in one smooth motion.\n6. Check the curvature (sori) and look for cracks.",
+      "visual_cues": "Clay layer clearly thicker on the spine than on the edge with a deliberate boundary line; even colour along the blade before the quench; no visible cracks after the quench."
+    }
+  ],
+  "assessment_rules": "Say cannot_assess if the piece is out of focus, too dark or too small in the frame. Never judge steel temperature, carbon content, weld quality inside the steel or the hardness of the edge from a photo; heat colours depend on lighting and the camera. Judge only what is visible: clay layer distribution and boundary line, visible cracks or open seams, the shape of the billet or blade, and visible safety (protective eyewear, clothing, clear striking area).",
+  "manual": "Standard katana forging overview (what books and documentaries already explain):\n- Tamahagane from the tatara is flattened, quenched and broken (mizuheshi / kowari), then pieces are sorted: higher-carbon for the jacket (kawagane), lower-carbon for the core (shingane).\n- Pieces are stacked on a teko-bō, wrapped, coated in straw ash and clay slurry and forge-welded (tsumiwakashi).\n- Folding (orikaeshi tanren) is typically 10-15 times in total, divided into foundation and finishing folding, alternating direction; it removes slag and evens the carbon.\n- The hard jacket is wrapped around the soft core (e.g. kobuse construction), drawn out (sunobe) and shaped (hizukuri), including the point (kissaki).\n- Clay is applied thick on the spine and thin on the edge (tsuchioki); the blade is heated to hardening temperature, judged by colour in a dark forge, and quenched in water (yaki-ire), which creates the hamon and adds curvature.\n- Polishing and mounting are done afterwards by separate specialists (togishi and others).",
+  "terms": [
+    "swordsmithing",
+    "tamahagane",
+    "hodo",
+    "bellows",
+    "pine charcoal",
+    "hammer",
+    "folding",
+    "quench",
+    "clay",
+    "hamon",
+    "chisel"
+  ],
+  "ja": {
+    "name": "日本刀の鍛錬（刀鍛冶）",
+    "category": "日本の伝統工芸",
+    "description": "玉鋼から日本刀を鍛える技：折り返し鍛錬、硬い鋼と軟らかい鋼の組み合わせ、土置きと水による焼き入れ。",
+    "safety_advisories": [
+      "高熱：沸かし温度（約1300℃）の鋼と火床はひどいやけどの原因になります。化学繊維ではなく綿や毛の服を着て、水を手元に置いてください。",
+      "飛び散る鉄肌と火花：打つたびに熱い鉄肌が飛びます。金床の近くにいる全員に保護めがねが必要です。",
+      "槌の呼吸：刀匠の小槌が先手の大槌のリズムを決めます。打撃の範囲に入ったり、順番を外して打ったりしないでください。",
+      "一酸化炭素：炭の火床は一酸化炭素を出します。必ず十分に換気してください。",
+      "焼き入れの蒸気：焼き入れでは熱い蒸気が上がります。手と顔を水槽から離してください。",
+      "法律上の注意：日本では、刀は作刀承認を受けた刀匠だけが作れます。このプロファイルは、教育のために刀匠の仕事を記録するものです。"
+    ],
+    "tools": {
+      "tamahagane": {
+        "name": "玉鋼",
+        "purpose": "たたら製鉄の鋼。炭素量で選り分ける"
+      },
+      "hodo": {
+        "name": "火床（ほど）と箱ふいご",
+        "purpose": "松炭で鋼を均一に加熱する"
+      },
+      "charcoal": {
+        "name": "松炭",
+        "purpose": "きれいで均一な燃料"
+      },
+      "kozuchi": {
+        "name": "小槌",
+        "purpose": "打撃を導き、形を整える"
+      },
+      "ozuchi": {
+        "name": "大槌（先手の槌）",
+        "purpose": "弟子による重い打撃"
+      },
+      "tekobo": {
+        "name": "てこ棒と箸（はし）",
+        "purpose": "火床と金床で鋼をつかむ"
+      },
+      "straw_ash": {
+        "name": "藁灰と泥水",
+        "purpose": "沸かしの間、鋼の酸化を防ぐ"
+      },
+      "tagane": {
+        "name": "鏨（たがね）",
+        "purpose": "折り返しのために鋼に切り込みを入れる"
+      },
+      "yakiba_clay": {
+        "name": "焼刃土",
+        "purpose": "冷え方を調整して刃文を作る"
+      },
+      "mizubune": {
+        "name": "水舟",
+        "purpose": "刀を焼き入れする"
+      }
+    },
+    "tasks": {
+      "folding": {
+        "title": "折り返し鍛錬（沸かしと鍛接）",
+        "summary": "積み重ねた鋼を沸かし温度まで加熱して鍛接し、切り込みを入れて何度も折り返し、炭素を均一にして不純物を出す。",
+        "default_procedure": "1. 火床で鋼を沸かし温度まで加熱する。\n2. 藁灰と泥水をまぶし、再び加熱する。\n3. 最初は軽く、次に先手の大槌で強く打って鍛接する。\n4. 鋼を約2倍の長さに打ち延ばす。\n5. 鏨で半分まで切り込みを入れ、折り返す。\n6. 折る方向を変えながら、予定の回数くり返す。",
+        "visual_cues": "鋼全体の均一な色、表面を覆う藁灰と泥、鍛接ごとに口あきや割れのない平らな鋼。"
+      },
+      "clay_quench": {
+        "title": "土置きと焼き入れ",
+        "summary": "棟と側面に厚く、刃に薄く焼刃土を置き、均一に加熱して焼き入れし、刃文と反りを生む。",
+        "default_procedure": "1. 形を整えた刀身を清掃し、油分を落とす。\n2. 刃には薄く、棟と側面には厚く土を置く。\n3. 土に刃文の形と足を描き、乾かす。\n4. 暗くした鍛冶場で、刀身全体を焼き入れ温度まで均一に加熱する。\n5. 刃を下にして一気に水舟へ入れる。\n6. 反りを確かめ、割れがないか確認する。",
+        "visual_cues": "棟側の土が刃側よりはっきり厚く、意図した境目の線がある。焼き入れ前の刀身の色が均一。焼き入れ後に目に見える割れがない。"
+      }
+    },
+    "manual": "一般的な日本刀の鍛錬の概要（本や記録映像ですでに説明されている内容）：\n- たたらの玉鋼を水へしで平らにして小割りし、炭素量で選り分ける：硬い鋼は皮鉄、軟らかい鋼は心鉄に。\n- てこ棒の上に積み重ね、藁灰と泥水をかけて沸かし、鍛接する（積み沸かし）。\n- 折り返し鍛錬は下鍛えと上鍛えで合わせて10〜15回ほど、方向を変えて行い、不純物を出し炭素を均一にする。\n- 硬い皮鉄で軟らかい心鉄を包み（甲伏せなど）、素延べ、火造りで切先まで形を作る。\n- 棟に厚く刃に薄く土を置き（土置き）、暗い鍛冶場で色を見て焼き入れ温度まで加熱し、水で焼き入れすると刃文と反りが生まれる。\n- 研ぎや拵えは、その後に研師などの専門職が行う。",
+    "terms": [
+      "鍛錬",
+      "刀鍛冶",
+      "玉鋼",
+      "火床",
+      "ふいご",
+      "松炭",
+      "槌",
+      "先手",
+      "折り返し鍛錬",
+      "焼き入れ",
+      "焼刃土",
+      "刃文",
+      "鏨",
+      "水減し"
+    ]
+  }
+}
