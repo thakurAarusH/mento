@@ -692,7 +692,7 @@ Developer B (Collaborator) — Branch: feature/multiskill-ui:
 ### Concurrency Rules
 - Developer A implements backend endpoints (`/api/skills`, `/api/help/:id/convert-to-knowledge`, migration) on branch `feature/skill-engine`.
 - Developer B implements frontend client interfaces on branch `feature/multiskill-ui` against the mock contracts specified in Section 3.
-- Neither developer edits [`app.js`](file:///home/aarush/Projects/Japan/mento/app.js) concurrently.
+- Neither developer edits [`app.js`](../app.js) concurrently.
 
 ---
 
