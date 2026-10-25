@@ -94,7 +94,7 @@ function ui() {
   <div class="card tools-card" aria-labelledby="tl"><h2 id="tl">${t('Tools you need')}</h2>${sk.tools.length ? `<p class="hint">${t('Tick each tool as you lay it out. This checklist stays on your phone.')}</p><ul class="tools stack check-list">${sk.tools.map((x, i) => `<li><label for="tool-${i}"><input type="checkbox" id="tool-${i}"><span><strong>${esc(x.name)}</strong>${x.purpose ? `<span class="hint">${esc(x.purpose)}</span>` : ''}</span></label></li>`).join('')}</ul>` : `<p class="empty">${t('No tools listed.')}</p>`}</div>
   <div class="card steps-card" aria-labelledby="pr"><h2 id="pr">${t('Procedure')}</h2>${procHtml(s.procedure)}</div></section>
 
-  <section class="tabpanel" id="p-learn" role="tabpanel" aria-labelledby="tab-learn"><div class="card" aria-labelledby="lh"><h2 id="lh">${t('Lessons from your master')}</h2><p class="hint">${t('Each lesson is your master\'s own explanation of a moment in their demonstration — the reasons and instincts a manual does not give. Mark a lesson as learned once you understand it.')}</p><div id="lessons"><p class="hint">${t('Loading…')}</p></div></div></section>
+  <section class="tabpanel" id="p-learn" role="tabpanel" aria-labelledby="tab-learn"><div class="card" aria-labelledby="lh"><h2 id="lh">${t('Lessons from your master')}</h2><p><a class="btn lab-go" id="labgo" href="/lab.html">🎮 ${t('Practice Lab')} <span class="badge b-info">${t('experiment')}</span></a></p><p class="hint">${t('Each lesson is your master\'s own explanation of a moment in their demonstration — the reasons and instincts a manual does not give. Mark a lesson as learned once you understand it.')}</p><div id="lessons"><p class="hint">${t('Loading…')}</p></div></div></section>
 
   <section class="tabpanel" id="p-practise" role="tabpanel" aria-labelledby="tab-practise"><div class="card" aria-labelledby="ph"><h2 id="ph">${t('Practise with camera checks')}</h2>
   <div class="gate"><label class="check" for="ack"><input type="checkbox" id="ack"> <span>${t('I have read the safety advisories (Overview) and my tools are ready.')}</span></label></div>
@@ -116,6 +116,8 @@ function ui() {
   $('#help').onclick = () => askHelp('The student pressed “I need help”.');
   $('#stop-ok').onclick = () => { $('#stop').hidden = true; };
   $('#end').onclick = endP; $('#vo').onchange = (e) => { voice = e.target.checked; if (canSpeak) speechSynthesis.cancel(); player.pause(); };
+  // Practice Lab (experiment): hand it this session's details so it needs no extra server call.
+  $('#labgo').onclick = () => { try { sessionStorage.setItem('mento.lab', JSON.stringify({ token, title: info.session.title, skill: { id: info.skill.id, tools: info.skill.tools } })); } catch { /* private mode: the lab still offers the demo */ } };
   $('#qf').onsubmit = ask; if ($('#qmic')) $('#qmic').onclick = speakQuestion;
   conn();
 }
