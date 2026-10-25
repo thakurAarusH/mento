@@ -5,7 +5,7 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 import { createCloud } from '../lib/cloud.js';
 
 const KEY = 'sk-ant-test-SECRET-0123456789', STT_KEY = 'sk-stt-test-SECRET-9876543210';
-const seen = { claude: [], ollama: 0, stt: [] }; let fail = false, echoKey = false;
+const seen = { claude: [], ollama: 0, stt: [], compat: [] }; let fail = false, echoKey = false, compatNoSchema = false;
 const answerFor = (props) => {
   if (props.ja) return { ja: 'なぜ横から挟むのですか？' };
   if (props.questions) return { manual_covers: 'nothing', questions: ['Why do you clamp from that side?', 'How do you know it is ready?', 'What do you do differently on old boards?'] };
@@ -25,6 +25,15 @@ before(async () => {
         const out = answerFor(body.output_config.format.schema.properties);
         res.writeHead(200, { 'content-type': 'application/json' });
         return res.end(JSON.stringify({ id: 'msg_1', type: 'message', role: 'assistant', model: body.model, content: [{ type: 'text', text: JSON.stringify(out) }], stop_reason: 'end_turn', stop_sequence: null, usage: { input_tokens: 1, output_tokens: 1 } }));
+      }
+      if (req.url === '/compat/chat/completions') { // OpenAI-compatible (Gemini) API
+        const body = JSON.parse(b); seen.compat.push({ headers: req.headers, body });
+        if (body.model === 'gemini-busy') { res.writeHead(503, { 'content-type': 'application/json' }); return res.end('{"error":{"message":"high demand"}}'); }
+        if (seen.compat.length === 1) { res.writeHead(429, { 'retry-after': '0.01', 'content-type': 'application/json' }); return res.end('{}'); }
+        if (body.response_format.type === 'json_schema' && compatNoSchema) { res.writeHead(400, { 'content-type': 'application/json' }); return res.end(JSON.stringify([{ error: { message: 'Invalid JSON payload: unknown field in response_format schema' } }])); }
+        const props = body.response_format.json_schema?.schema.properties || JSON.parse(body.messages[0].content[0].text.split('JSON schema:\n')[1]).properties;
+        res.writeHead(200, { 'content-type': 'application/json' });
+        return res.end(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { role: 'assistant', content: '```json\n' + JSON.stringify(answerFor(props)) + '\n```' } }] }));
       }
       if (req.url === '/api/chat') { seen.ollama++; res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ message: { content: JSON.stringify({ summary: 'Local summary.', cues: '', warnings: '', step: 'Local step', tool: '', reply: 'Local reply.', knowledge_ids: [] }) } })); }
       if (req.url === '/stt') { seen.stt.push({ headers: req.headers, body: b.toString() }); res.writeHead(fail ? 503 : 200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ text: ' はんだごてを当てます。 ' })); }
@@ -133,3 +142,27 @@ test('app: keys never reach browsers; consent, legal pages and the dashboard say
   assert.match(pages[4], /ハイブリッドAI/); assert.match(pages[5], /sends AI requests to Anthropic and 127\.0\.0\.1/);
 });
 test('app: cleanup', () => { srv.close(); app.close(); fs.rmSync(dir, { recursive: true, force: true }); });
+
+test('Gemini / OpenAI-compatible provider: images, bearer key, waits out 429, falls back to plain JSON when schemas are rejected', async () => {
+  const GKEY = 'AIza-test-SECRET-0123456789abcdef';
+  const c = createCloud({ CLOUD_AI: 'vision', CLOUD_PROVIDER: 'gemini', CLOUD_API_KEY: GKEY, CLOUD_BASE_URL: mockUrl + '/compat', CLOUD_MODEL: 'gemini-test' });
+  assert.equal(c.status().provider, 'Google Gemini'); assert.equal(c.label, 'gemini:gemini-test'); assert.equal(c.route('see', true), 'vision');
+  const out = JSON.parse(await c.json('judge', 'Pick the best.', [Buffer.from('jpeg-bytes')]));
+  assert.deepEqual(out, { scores: [5, 3, 2], best: 0 }, 'code fences stripped');
+  assert.equal(seen.compat.length, 2, 'one 429, then retried');
+  const req = seen.compat[1]; assert.equal(req.headers.authorization, 'Bearer ' + GKEY); assert.equal(req.body.model, 'gemini-test');
+  assert.match(req.body.messages[0].content[1].image_url.url, /^data:image\/jpeg;base64,/); assert.equal(req.body.response_format.type, 'json_schema');
+  compatNoSchema = true;
+  assert.equal(JSON.parse(await c.json('translate', 'Translate.')).ja, 'なぜ横から挟むのですか？');
+  const last = seen.compat.at(-1); assert.equal(last.body.response_format.type, 'json_object'); assert.match(last.body.messages[0].content[0].text, /JSON schema/);
+  assert.ok(!JSON.stringify(c.status()).includes(GKEY));
+  compatNoSchema = false;
+});
+
+test('Gemini: a busy model hands the request to the backup model', async () => {
+  const c = createCloud({ CLOUD_AI: 'text', CLOUD_PROVIDER: 'gemini', CLOUD_API_KEY: 'AIza-test-SECRET-0123456789abcdef', CLOUD_BASE_URL: mockUrl + '/compat', CLOUD_MODEL: 'gemini-busy', CLOUD_BACKUP_MODEL: 'gemini-lite' });
+  const n = seen.compat.length;
+  assert.equal(JSON.parse(await c.json('followup', 'Ask a follow-up.')).question, 'Why then?');
+  const models = seen.compat.slice(n).map((x) => x.body.model);
+  assert.deepEqual(models.slice(0, 2), ['gemini-busy', 'gemini-busy']); assert.equal(models.at(-1), 'gemini-lite');
+});

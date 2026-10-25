@@ -81,7 +81,7 @@ Without Ollama, analysis says "not configured" and the master adds key moments b
 
 ## Hybrid AI (optional)
 
-Local mode is the default and always the fallback. The operator can let a cloud model (Anthropic Claude) help where the small local model is weakest.
+Local mode is the default and always the fallback. The operator can let a cloud model (Anthropic Claude, or Google Gemini for free) help where the small local model is weakest.
 
 | `CLOUD_AI` | Sent to the cloud | Stays local |
 |---|---|---|
@@ -98,6 +98,17 @@ How it behaves:
 - **Speech to text:** optional cloud transcription (`CLOUD_STT=1`) works with any OpenAI-compatible endpoint.
 
 To set it up, add `CLOUD_AI=text` and `ANTHROPIC_API_KEY=…` to `.env`, run `npm run cloud-check`, then restart MENTO.
+
+**Free option (no card): Google Gemini.** Get a key at [aistudio.google.com](https://aistudio.google.com) (*Get API key*), then set:
+
+```
+CLOUD_AI=vision
+CLOUD_PROVIDER=gemini
+CLOUD_API_KEY=<your key>
+CLOUD_MIN_INTERVAL_MS=6000
+```
+
+Use `vision` on a server with no local vision model, so Gemini also looks at the video frames. The free tier allows only a few requests a minute, so MENTO spaces its calls out and waits whenever Google replies "too many requests". A video analysis takes a few minutes. On the free tier, Google may use what it receives to improve its products, and the privacy page and consent screens say so automatically. The live demo runs this way.
 
 ## HTTPS for phones
 
@@ -118,7 +129,7 @@ A restarted quick tunnel gets a new address.
 
 ## Design decisions
 
-The hackathon asked for zero cost, local data and privacy, so:
+MENTO was designed to cost nothing to run and to keep data local and private, so:
 
 | Usual choice | What MENTO uses | Why |
 |---|---|---|

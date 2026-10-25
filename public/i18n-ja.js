@@ -1,5 +1,6 @@
 // Japanese interface text, keyed by the English text used in the code (generated from a reviewed table).
 export const JA = {
+"This uses the free tier of {p}, which may use what it receives to improve its products. Please do not record anything confidential.": "{p} の無料枠を利用しています。提供者は受け取った内容を自社サービスの改善に使う場合があります。機密性の高い内容は録画しないでください。",
 "Your master's lessons": "師匠のレッスン",
 "Step {n}": "ステップ{n}",
 "How does your master know this step is done right?": "師匠は、このステップがうまくいったことを何で判断していますか？",
@@ -996,7 +997,7 @@ JA_SERVER.patterns = [
   [/^Unsupported video type "(.*)"\. Use MP4, WebM or MOV\.$/, (m) => `対応していない動画形式です（${m}）。MP4、WebM、MOVを使ってください。`],
   [/^Snapshot must be a JPEG under (\d+) KB\.$/, (n) => `静止画は${n} KB未満のJPEGにしてください。`],
   [/^Local AI took longer than (\d+) s on one image$/, (n) => `ローカルAIの処理が1枚あたり${n}秒を超えました`],
-  [/^Local AI failed on 3 frames in a row \(last: (.*)\)\. Nothing was saved; retry later\.$/, (m) => `ローカルAIが3枚続けて失敗しました（最後のエラー：${m}）。何も保存していません。後でもう一度お試しください。`],
+  [/^(?:Local AI|The AI) failed on 3 frames in a row \(last: (.*)\)\. Nothing was saved; retry later\.$/, (m) => `AIが3枚続けて失敗しました（最後のエラー：${m}）。何も保存していません。後でもう一度お試しください。`],
   [/^Read-aloud in (Japanese|English) is not set up on this computer\.$/, (l) => `このコンピューターでは${l === 'Japanese' ? '日本語' : '英語'}の読み上げが設定されていません。`],
   [/^Automatic check unavailable: (.*)$/, (m) => `自動チェックを利用できません：${m}`],
   [/^Transcription failed: (.*)$/, (m) => `文字起こしに失敗しました：${m === 'took too long' ? '時間がかかりすぎました' : m}`],

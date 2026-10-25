@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { createCloud } from '../lib/cloud.js';
 if (fs.existsSync('.env')) for (const l of fs.readFileSync('.env', 'utf8').split('\n')) { const m = l.match(/^\s*([A-Z_]+)\s*=\s*(.*)\s*$/); if (m && !process.env[m[1]]) process.env[m[1]] = m[2]; }
 const c = createCloud(process.env), s = c.status();
-console.log(`Cloud AI: ${s.mode === 'off' ? 'off (set CLOUD_AI=text or vision and ANTHROPIC_API_KEY)' : `${s.mode} via ${s.provider} ${s.model}`}`);
+console.log(`Cloud AI: ${s.mode === 'off' ? 'off (set CLOUD_AI=text or vision and a key: ANTHROPIC_API_KEY, or CLOUD_PROVIDER=gemini with CLOUD_API_KEY)' : `${s.mode} via ${s.provider} ${s.model}`}`);
 console.log(`Cloud speech-to-text: ${s.stt ? `${s.stt.model} at ${s.stt.host}` : 'off (set CLOUD_STT=1 and CLOUD_STT_KEY)'}`);
 let bad = 0;
 const time = async (name, fn) => { const t0 = Date.now(); try { const r = await fn(); console.log(`  ✓ ${name} (${Date.now() - t0} ms): ${r}`); } catch (e) { bad++; console.log(`  ✗ ${name}: ${e.message}`); } };

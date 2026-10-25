@@ -7,6 +7,8 @@ The installer (`setup.sh`) works on any Ubuntu 24.04 server. Two free options we
 Students can sign up at <https://azure.microsoft.com/free/students> with their **university email** and get free small servers for 12 months. No card is needed, but sign in with the university email, not a personal one, or Azure will ask for a card.
 
 1. **Create the VM:** *Virtual machines → Create → Azure virtual machine*.
+   - Region: one your subscription allows (Cloud Shell: `az policy assignment list --disable-scope-strict-match --query "[].parameters"`)
+     **and** where Google Gemini is available. Not East Asia (Hong Kong): Gemini refuses requests from there. The live demo uses Japan East.
    - Image: **Ubuntu Server 24.04 LTS**
    - Size: **B2ats v2** (marked "free services eligible")
    - Authentication: **SSH public key**, user `azureuser`
@@ -14,7 +16,16 @@ Students can sign up at <https://azure.microsoft.com/free/students> with their *
    - Public IP: **Static**
    - Auto-shutdown: **Off**
 2. **Install** with the commands in Part 2 below, using `azureuser@$IP` and adding `MENTO_NO_AI=1`.
-   The free VM has only 1 GB of memory, which is too little for the local vision AI. The installer adds swap and runs everything else. To turn AI analysis on, add a cloud key ([Hybrid AI](../../docs/TECHNICAL.md#hybrid-ai-optional)).
+   The free VM has only 1 GB of memory, which is too little for the local vision AI. The installer adds swap and runs everything else.
+3. **Turn the AI on** with a free Gemini key (aistudio.google.com → *Get API key*, no card). Add to `/opt/mento/.env`, then `sudo systemctl restart mento`:
+   ```
+   CLOUD_AI=vision
+   CLOUD_PROVIDER=gemini
+   CLOUD_API_KEY=<your key>
+   CLOUD_MIN_INTERVAL_MS=4000
+   CLOUD_TIMEOUT_MS=90000
+   ```
+   A video analysis then takes about 3–4 minutes. When the main model is busy, MENTO automatically uses `gemini-3.5-flash-lite`.
 
 ```bash
 ssh -i ~/.ssh/mento_oracle azureuser@$IP "sudo MENTO_HOST=$HOST MENTO_NO_AI=1 bash mento/deploy/oracle/setup.sh"

@@ -21,6 +21,7 @@ export const connDot = (online) => (online ? `<span class="conn-dot ok" title="$
 const aiBullet = (m) => [!m || m.cloud === 'off' ? t('Analysed only by a local AI model if the operator set one up; nothing is sent to cloud AI in this build.')
   : m.cloud === 'vision' ? t('Analysed with help from cloud AI ({p}) for better accuracy: still frames, photos and text are sent to it. Full videos, names and passwords are never sent.', { p: m.provider })
     : t('Analysed by a local AI model, with cloud AI ({p}) helping with text only: descriptions, answers and questions. Photos and videos stay on the operator\'s computer.', { p: m.provider }),
+  m?.freeTier ? t('This uses the free tier of {p}, which may use what it receives to improve its products. Please do not record anything confidential.', { p: m.provider }) : '',
   m?.stt ? t('Spoken answers are transcribed by a cloud speech service ({h}).', { h: m.sttHost }) : ''].filter(Boolean).join(' ');
 export const consentHtml = (who, mode) => `<form id="cf" class="card narrow"><h1>${t('MENTO · Before we start')}</h1><p class="hint">${t('Experience becomes expertise.')}</p>
 <p>${who === 'master' ? t('This master page will use your <strong>camera and microphone</strong> once you press the button below.') : t('This student page will use your <strong>camera</strong> once you press the button below.')} ${t('Recording and analysis only start when you tell it to, and a red “Recording” indicator is always visible while it runs.')}</p>

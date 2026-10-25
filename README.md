@@ -4,24 +4,31 @@
 
 MENTO helps experienced craftspeople pass on what they know — not just the steps, but the *why* behind them.
 
-Built by team **ONIGIRI BENTO** for the **Thapar Japan Hackathon 2026**.
-
-🌐 **Try it live:** <https://52-139-145-196.sslip.io>
+🌐 **Try it live:** <https://74-176-216-187.sslip.io>
 
 ![MENTO landing page](docs/images/landing.jpg)
 
 ---
 
-## The problem
+## Why we built this
 
-Manuals are good at the standard steps. What they miss is the stuff a master knows without thinking about it:
-why they hold the iron *there*, how they can tell the joint is ready, what they change when the wood is wet.
-When a master retires, most of that leaves with them.
+Every workshop has someone like this: the person who has done the job for thirty years and just *knows*.
+They can hear when a weld is wrong. They can feel when the clay is ready. They know which shortcut is fine and which one ruins the piece.
 
-Asking a master to "write it all down" doesn't work — they don't know what they know.
-But if you **watch them work and ask good questions at the right moments**, it comes out naturally.
+Almost none of that is written down anywhere. Manuals are good at the standard steps, but they skip exactly the parts that matter most:
+why the master holds the iron *there*, how they can tell the joint is ready, what they do differently when the wood is wet.
+This kind of know-how has a name: **tacit knowledge**. It's the knowledge people carry in their hands and their judgement, not in documents.
 
-That's what MENTO does.
+And it's disappearing. In Japan especially, many master craftspeople are retiring with no one to take over,
+and in factories around the world, experienced workers leave and take years of judgement with them.
+The usual fix is to have a new person shadow the master for years, but there often isn't time for that, or enough masters to go around.
+
+Asking a master to "write it all down" doesn't work either. They don't know what they know; it's become automatic.
+But if you **watch them work and ask the right question at the right moment**, the answer comes out naturally:
+*"Oh, I wait two seconds there because the pad has to heat up first, otherwise the solder just sits on top."*
+
+That's what MENTO is for. It does the watching and the asking, so the master only has to do what they're already good at,
+and it turns their answers into lessons a beginner can follow, in the master's own words and approved by them.
 
 ## How it works
 
@@ -157,11 +164,7 @@ docs/             technical guide, API reference, compliance notes
 
 ## About the live demo
 
-The live site runs on a small free student server (Azure for Students). Because that server has only 1 GB of memory, the AI video analysis is switched off there. Everything else works, including the sessions and knowledge already recorded. For the full AI experience, run MENTO on a laptop as above.
-
-## Team
-
-**ONIGIRI BENTO** 🍙 — Thapar Japan Hackathon 2026
+The live site runs on a small free server (Azure for Students). The server is too small for a local AI model, so the live site uses Google's free Gemini AI for video analysis, questions and photo checks. Speech-to-text and read-aloud run on the server itself. On a laptop, everything can run fully offline with the local AI.
 
 ## Credits
 

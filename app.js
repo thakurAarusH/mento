@@ -253,7 +253,9 @@ export function createApp(o = {}) {
   // ---- AI: local Ollama, optionally helped by cloud AI (hybrid). Never faked: failures are surfaced. ----
   const localOk = () => { try { localReady(); return true; } catch { return false; } };
   // kind: 'see' (frames), 'ask', 'judge', 'translate', 'followup', 'draft', 'check' (student photo), 'reply'.
-  function aiReady(kind = 'see') { if (!C.cloud.route(kind, true)) localReady(); }
+  // With no local model, a paused cloud should report its own error (e.g. a blocked region), not "no local model".
+  const cloudPaused = () => { const c = C.cloud.status(); return c.mode !== 'off' && c.paused && !localOk() ? new Error('Cloud AI (' + c.provider + ') is paused after an error: ' + (c.lastError || 'unknown') + '. It retries automatically.') : null; };
+  function aiReady(kind = 'see') { if (!C.cloud.route(kind, true)) { const p = cloudPaused(); if (p) throw p; localReady(); } }
   const aiAvailable = (kind = 'see') => { try { aiReady(kind); return true; } catch { return false; } };
   const aiInfo = () => ({ local: localOk() ? C.vModel : null, cloud: C.cloud.status() });
   // Cloud first when the operator allowed it for this kind of task, the local model otherwise or whenever the cloud fails.
@@ -264,6 +266,7 @@ export function createApp(o = {}) {
       try { return { out: await C.cloud.json(kind, way === 'text' ? prompt.replace('The image shows this moment.', NO_IMG) : prompt, way === 'vision' ? [].concat(img) : []), engine: C.cloud.label }; }
       catch (e) { if (!localOk()) throw e; console.warn(e.message + ' — using the local model instead'); }
     }
+    const p = cloudPaused(); if (p) throw p;
     return { out: await ollama(prompt, img), engine: 'ollama:' + C.vModel };
   }
   function localReady() {
@@ -504,7 +507,7 @@ Return JSON {"summary":string,"cues":string,"warnings":string,"step":string,"too
         }
         // The first frame is only the baseline; afterwards a run of consecutive "notable" frames is one moment, asked at its start.
         const hit = i > 0 && j?.notable === true, startsRun = hit && !inRun; inRun = hit;
-        if (err) { P.skipped++; if (++fails >= 3) throw new Error(`Local AI failed on 3 frames in a row (last: ${err.message}). Nothing was saved; retry later.`); } else fails = 0;
+        if (err) { P.skipped++; if (++fails >= 3) throw new Error(`The AI failed on 3 frames in a row (last: ${err.message}). Nothing was saved; retry later.`); } else fails = 0;
         const t = i * P.step, action = String(j?.action || j?.visible || '').trim().replace(/\.$/, '').slice(0, 300);
         if (!err && action) {
           timeline.push({ t, action: action.slice(0, 140) });
@@ -596,7 +599,7 @@ Return JSON {"summary":string,"cues":string,"warnings":string,"step":string,"too
   const raw = (mb) => express.raw({ type: () => true, limit: mb + 'mb' });
 
   // What leaves this computer, for consent screens: never keys.
-  app.get('/api/ai-mode', (req, res) => { const c = C.cloud.status(); res.json({ cloud: c.mode, provider: c.provider, stt: !!c.stt, sttHost: c.stt?.host || null }); });
+  app.get('/api/ai-mode', (req, res) => { const c = C.cloud.status(); res.json({ cloud: c.mode, provider: c.provider, stt: !!c.stt, sttHost: c.stt?.host || null, ...(c.freeTier ? { freeTier: true } : {}) }); });
   app.get('/api/health', (req, res) => res.json({ ok: true, db: !!q1('SELECT 1 x'), ai: aiAvailable(), time: now() }));
   // Legal pages follow the interface language (?lang=ja|en, else the mz_lang cookie set by the language switch).
   app.get(['/privacy', '/terms', '/cookies'], (req, res) => {
@@ -1044,7 +1047,7 @@ Return JSON {"text":string}.`;
     const b = req.body, manual = req.query.manual === '1';
     if (!Buffer.isBuffer(b) || b.length > C.maxFrameKb * 1024 || !isJpeg(b)) return res.status(400).json({ error: `Snapshot must be a JPEG under ${C.maxFrameKb} KB.` });
     if (busy.has(p.id)) return res.status(202).json({ queued: false, reason: 'previous check still running' });
-    if (progress.size) return res.status(202).json({ queued: false, reason: 'The local AI is busy analysing a master recording. Photo checks resume when it finishes — ask the master if you need help now.' });
+    if (progress.size && !C.cloud.route('check', true)) return res.status(202).json({ queued: false, reason: 'The local AI is busy analysing a master recording. Photo checks resume when it finishes — ask the master if you need help now.' });
     if (!manual && Date.now() - (lastAt.get(p.id) || 0) < C.snapMs * 0.8) return res.status(202).json({ queued: false, reason: 'rate limited' });
     lastAt.set(p.id, Date.now());
     const ff = `frames/live-${p.id}.jpg`; fs.writeFileSync(path.join(C.dir, ff), b); run('UPDATE practice SET frame_file=? WHERE id=?', ff, p.id);
