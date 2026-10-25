@@ -3,3 +3,6 @@ data
 .env
 /data/
 /node_modules/
+
+# explainer video: kept locally, not on GitHub
+/video/

@@ -1,4 +1,26 @@
-# Deploy MENTO on Oracle Cloud Always Free ($0/month)
+# Putting MENTO on a server
+
+The installer (`setup.sh`) works on any Ubuntu 24.04 server. Two free options we've used or planned:
+
+## Option A: Azure for Students (no credit card) — what the live demo uses
+
+Students can sign up at <https://azure.microsoft.com/free/students> with their **university email** and get free small servers for 12 months. No card is needed, but sign in with the university email, not a personal one, or Azure will ask for a card.
+
+1. **Create the VM:** *Virtual machines → Create → Azure virtual machine*.
+   - Image: **Ubuntu Server 24.04 LTS**
+   - Size: **B2ats v2** (marked "free services eligible")
+   - Authentication: **SSH public key**, user `azureuser`
+   - Inbound ports: **80, 443, 22**
+   - Public IP: **Static**
+   - Auto-shutdown: **Off**
+2. **Install** with the commands in Part 2 below, using `azureuser@$IP` and adding `MENTO_NO_AI=1`.
+   The free VM has only 1 GB of memory, which is too little for the local vision AI. The installer adds swap and runs everything else. To turn AI analysis on, add a cloud key ([Hybrid AI](../../docs/TECHNICAL.md#hybrid-ai-optional)).
+
+```bash
+ssh -i ~/.ssh/mento_oracle azureuser@$IP "sudo MENTO_HOST=$HOST MENTO_NO_AI=1 bash mento/deploy/oracle/setup.sh"
+```
+
+## Option B: Oracle Cloud Always Free ($0/month, needs a card for verification)
 
 One always-on ARM server runs everything: the app, database, uploaded videos, Whisper, Open JTalk and the local vision AI,
 behind HTTPS (Caddy + a free Let's Encrypt certificate). Your laptop can be switched off.
